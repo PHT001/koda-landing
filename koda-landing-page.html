@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koda — Le cockpit Notion pour freelances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080C;--bg2:#0F0F15;--bg3:#15151E;--bg4:#1C1C28;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);
+  --text:#F2F0F7;--text2:#A09CB2;--text3:#6B6780;
+  --accent:#BEFF3B;--accent-s:rgba(190,255,59,.08);--accent-m:rgba(190,255,59,.15);
+  --red:#FF5C5C;--green:#3DD56D;--blue:#5B7FFF;--orange:#FFB03A;--purple:#A78BFA;
+  --d:'Plus Jakarta Sans',sans-serif;--b:'Inter',sans-serif;--m:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--b);font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.scroll-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);z-index:10001;width:0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes gradText{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes glow{0%,100%{box-shadow:0 0 16px rgba(190,255,59,.12)}50%{box-shadow:0 0 32px rgba(190,255,59,.25)}}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes typeIn{from{width:0}to{width:100%}}
+@keyframes growBar{from{height:0}to{height:var(--h)}}
+@keyframes slideRow{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes popTag{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes fillGauge{from{stroke-dashoffset:251}to{stroke-dashoffset:var(--offset)}}
+@keyframes kanSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes notionRow{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes notionType{from{width:0}to{width:var(--tw)}}
+@keyframes notionCheck{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes countPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.a{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.a.v{opacity:1;transform:translateY(0)}
+.al{opacity:0;transform:translateX(-24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}.al.v{opacity:1;transform:translateX(0)}
+.ar{opacity:0;transform:translateX(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}.ar.v{opacity:1;transform:translateX(0)}
+.as{opacity:0;transform:scale(.94);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}.as.v{opacity:1;transform:scale(1)}
+.d1{transition-delay:.06s!important}.d2{transition-delay:.12s!important}.d3{transition-delay:.18s!important}.d4{transition-delay:.24s!important}.d5{transition-delay:.3s!important}.d6{transition-delay:.36s!important}
+.w{max-width:1140px;margin:0 auto;padding:0 24px}.tc{text-align:center}
+h1,h2,h3,h4{font-family:var(--d)}
+.label{font-family:var(--m);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px}
+.title{font-size:clamp(28px,4.5vw,46px);font-weight:800;letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px}
+.grad{background:linear-gradient(135deg,var(--accent),#80FF00,var(--accent));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradText 5s ease infinite}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--d);font-weight:700;border-radius:12px;cursor:pointer;text-decoration:none;transition:all .3s cubic-bezier(.16,1,.3,1);border:none;white-space:nowrap}
+.btn-main{padding:14px 28px;background:var(--accent);color:#000;font-size:15px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(190,255,59,.3)}
+.btn-main .arr{transition:transform .25s;font-size:16px}.btn-main:hover .arr{transform:translateX(3px)}
+.btn-out{padding:14px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);font-size:14px}
+.btn-out:hover{border-color:rgba(255,255,255,.18);color:var(--text);background:rgba(255,255,255,.03)}
+.btn-big{padding:17px 36px;font-size:16px;border-radius:14px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;transition:border-color .3s,transform .35s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+.card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.2)}
+
+/* === NAV === */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 24px;transition:all .4s}
+nav.s{background:rgba(8,8,12,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--d);font-weight:800;font-size:21px;letter-spacing:-.7px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-m{width:32px;height:32px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#000;font-weight:800;transform:rotate(-3deg)}
+.nav-r{display:flex;align-items:center;gap:20px}
+.nav-r a.link{font-size:13px;color:var(--text3);text-decoration:none;font-weight:500;transition:color .25s}.nav-r a.link:hover{color:var(--text)}
+
+/* === HERO === */
+.hero{min-height:100vh;display:flex;align-items:center;padding:100px 0 60px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(140px);pointer-events:none}
+.ho1{width:600px;height:600px;background:rgba(190,255,59,.06);top:-200px;right:-150px;animation:float 9s ease infinite}
+.ho2{width:350px;height:350px;background:rgba(91,127,255,.05);bottom:-80px;left:-80px;animation:float 12s ease infinite 3s}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;z-index:2}
+.hero h1{font-size:clamp(40px,6.5vw,66px);font-weight:800;letter-spacing:-2px;line-height:.96;margin-bottom:18px;animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .05s both}
+.hero-p{font-size:17px;color:var(--text2);line-height:1.6;margin-bottom:28px;max-width:420px;animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .15s both}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .25s both}
+.hero-trust{display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .4s both}
+.ht{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);font-weight:500}
+.ht svg{width:13px;height:13px;color:var(--accent)}
+
+/* Hero Notion mockup - animated */
+.hero-mock{animation:fadeUp 1s cubic-bezier(.16,1,.3,1) .3s both}
+.hm{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.4)}
+.hm-bar{height:36px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:6px}
+.hm-dot{width:8px;height:8px;border-radius:50%}.hm-dot:nth-child(1){background:#FF5F57}.hm-dot:nth-child(2){background:#FFBD2E}.hm-dot:nth-child(3){background:#28CA41}
+.hm-bar-title{font-size:11px;color:var(--text3);margin-left:8px;font-family:var(--m)}
+.hm-body{padding:14px}
+.hm-sidebar{display:flex;gap:6px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.hm-tab{padding:5px 10px;border-radius:6px;font-size:10px;font-family:var(--m);color:var(--text3);cursor:default;transition:all .3s}
+.hm-tab.active{background:var(--accent-s);color:var(--accent);border:1px solid rgba(190,255,59,.12)}
+.hm-tab:not(.active){border:1px solid transparent}
+/* Notion table */
+.n-table{width:100%}
+.n-thead{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;padding:5px 8px;border-bottom:1px solid var(--border);margin-bottom:2px}
+.n-th{font-size:9px;font-family:var(--m);color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.n-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;padding:6px 8px;border-radius:6px;transition:background .2s;opacity:0}
+.n-row.visible{animation:notionRow .4s cubic-bezier(.16,1,.3,1) forwards}
+.n-row:hover{background:rgba(255,255,255,.02)}
+.n-cell{font-size:10px;color:var(--text2);display:flex;align-items:center}
+.n-name{font-weight:600;color:var(--text)}
+.n-tag{padding:2px 7px;border-radius:100px;font-size:8px;font-weight:600;opacity:0;display:inline-block}
+.n-tag.pop{animation:popTag .3s cubic-bezier(.16,1,.3,1) forwards}
+.n-val{font-family:var(--m);font-size:10px}
+.n-progress{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;width:100%}
+.n-progress-fill{height:100%;background:var(--accent);border-radius:2px;width:0;transition:width 1s cubic-bezier(.16,1,.3,1)}
+
+/* === PAIN SECTION — SINGLE STAT === */
+.pain{padding:140px 0 100px;position:relative;overflow:hidden}
+.pain-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,92,92,.05),transparent 60%);pointer-events:none}
+.pain-inner{max-width:720px;margin:0 auto;text-align:center}
+.pain-big{font-family:var(--d);font-size:clamp(72px,13vw,150px);font-weight:800;letter-spacing:-5px;line-height:.9;color:var(--red);margin-bottom:10px}
+.pain-big .pain-counter{display:inline-block}
+.pain-big .pain-unit{font-size:.6em}
+.pain-headline{font-family:var(--d);font-size:clamp(18px,2.8vw,28px);font-weight:700;letter-spacing:-.3px;line-height:1.35;margin-bottom:14px;color:var(--text);max-width:600px;margin-left:auto;margin-right:auto}
+.pain-headline span{color:var(--red)}
+.pain-sub{font-size:14px;color:var(--text3);max-width:440px;margin:0 auto 48px;line-height:1.6}
+/* Pain timeline */
+.pain-line{position:relative;max-width:680px;margin:0 auto;display:flex;justify-content:space-between;gap:12px}
+.pain-line::before{content:'';position:absolute;top:28px;left:40px;right:40px;height:2px;background:var(--bg4)}
+.pain-line-fill{position:absolute;top:28px;left:40px;height:2px;background:var(--red);width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1) .3s}
+.pain-line.animated .pain-line-fill{width:calc(100% - 80px)}
+.pain-step{flex:1;text-align:center;position:relative;z-index:1}
+.pain-step-dot{width:56px;height:56px;border-radius:50%;background:var(--bg2);border:2px solid var(--bg4);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .5s cubic-bezier(.16,1,.3,1);opacity:0;transform:scale(.6)}
+.pain-line.animated .pain-step-dot{opacity:1;transform:scale(1);border-color:var(--red);box-shadow:0 0 20px rgba(255,92,92,.15)}
+.pain-step:nth-child(2) .pain-step-dot{transition-delay:.4s}
+.pain-step:nth-child(3) .pain-step-dot{transition-delay:.8s}
+.pain-step-amount{font-family:var(--d);font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--red);margin-bottom:2px;opacity:0;transform:translateY(6px);transition:all .5s cubic-bezier(.16,1,.3,1)}
+.pain-line.animated .pain-step-amount{opacity:1;transform:translateY(0)}
+.pain-step:nth-child(1) .pain-step-amount{transition-delay:.2s}
+.pain-step:nth-child(2) .pain-step-amount{transition-delay:.6s}
+.pain-step:nth-child(3) .pain-step-amount{transition-delay:1s}
+.pain-step-label{font-family:var(--d);font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;opacity:0;transition:opacity .4s}
+.pain-line.animated .pain-step-label{opacity:1}
+.pain-step:nth-child(1) .pain-step-label{transition-delay:.25s}
+.pain-step:nth-child(2) .pain-step-label{transition-delay:.65s}
+.pain-step:nth-child(3) .pain-step-label{transition-delay:1.05s}
+.pain-step-desc{font-size:11px;color:var(--text3);line-height:1.4;opacity:0;transition:opacity .4s}
+.pain-line.animated .pain-step-desc{opacity:1}
+.pain-step:nth-child(1) .pain-step-desc{transition-delay:.3s}
+.pain-step:nth-child(2) .pain-step-desc{transition-delay:.7s}
+.pain-step:nth-child(3) .pain-step-desc{transition-delay:1.1s}
+
+/* === TRANSITION CTA === */
+.transition-cta{padding:60px 0;text-align:center}
+.tc-box{padding:48px;background:linear-gradient(180deg,rgba(190,255,59,.02),var(--bg2));border:1px solid rgba(190,255,59,.08);border-radius:22px;position:relative;overflow:hidden}
+.tc-box::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(190,255,59,.4),transparent)}
+.tc-box h3{font-size:clamp(22px,3.5vw,34px);font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+.tc-box p{font-size:14px;color:var(--text2);margin-bottom:22px}
+
+/* === ANIMATED NOTION DEMO === */
+.notion-demo{padding:80px 0 100px}
+.nd-wrap{max-width:760px;margin:48px auto 0}
+.nd-window{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.nd-bar{height:40px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:6px}
+.nd-dot{width:9px;height:9px;border-radius:50%}.nd-dot:nth-child(1){background:#FF5F57}.nd-dot:nth-child(2){background:#FFBD2E}.nd-dot:nth-child(3){background:#28CA41}
+.nd-title{font-size:11px;color:var(--text3);font-family:var(--m);margin-left:12px}
+.nd-body{padding:20px}
+.nd-tabs{display:flex;gap:4px;margin-bottom:16px}
+.nd-tab{padding:6px 12px;border-radius:7px;font-size:10px;font-family:var(--m);color:var(--text3);border:1px solid transparent;cursor:default;transition:all .4s}
+.nd-tab.active{background:var(--accent-s);color:var(--accent);border-color:rgba(190,255,59,.12)}
+/* Notion animated table */
+.nd-table{width:100%}
+.nd-thead{display:grid;grid-template-columns:2.2fr 1.2fr 1fr .8fr;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.nd-th{font-size:10px;font-family:var(--m);color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.nd-row{display:grid;grid-template-columns:2.2fr 1.2fr 1fr .8fr;gap:6px;padding:8px 10px;border-radius:8px;border-bottom:1px solid rgba(255,255,255,.02);opacity:0;transform:translateY(8px)}
+.nd-row.show{animation:notionRow .5s cubic-bezier(.16,1,.3,1) forwards}
+.nd-cell{font-size:11px;color:var(--text2);display:flex;align-items:center}
+.nd-cell.name{font-weight:600;color:var(--text)}
+.nd-tag{padding:3px 9px;border-radius:100px;font-size:9px;font-weight:600;opacity:0;display:inline-block;transform:scale(.7)}
+.nd-tag.pop{animation:popTag .35s cubic-bezier(.16,1,.3,1) forwards}
+.nd-amount{font-family:var(--m);font-size:11px}
+.nd-check{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .3s}
+.nd-check.checked{background:var(--accent);border-color:var(--accent);color:#000;animation:notionCheck .4s cubic-bezier(.16,1,.3,1)}
+/* Summary bar */
+.nd-summary{display:flex;gap:16px;padding:14px 10px;margin-top:8px;border-top:1px solid var(--border)}
+.nd-sum-item{font-size:10px;color:var(--text3)}
+.nd-sum-item strong{color:var(--accent);font-family:var(--m);font-weight:700}
+.nd-sum-val{display:inline-block;opacity:0;transform:translateY(4px);transition:all .5s cubic-bezier(.16,1,.3,1)}
+.nd-sum-val.show{opacity:1;transform:translateY(0)}
+/* Cursor blink */
+.nd-cursor{display:inline-block;width:1.5px;height:13px;background:var(--accent);margin-left:2px;animation:blink 1s step-end infinite;vertical-align:middle}
+
+/* === FEATURES VISUAL === */
+.features{padding:100px 0 120px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{padding:0;overflow:hidden}
+.feat-top{padding:24px 22px 16px}
+.feat-top h3{font-family:var(--d);font-size:16px;font-weight:700;margin-bottom:4px}
+.feat-top p{font-size:12px;color:var(--text3);line-height:1.4}
+.feat-visual{padding:0 14px 14px}
+.feat-mini{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;min-height:100px}
+/* Animated mini chart */
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:56px}
+.mini-bar{flex:1;border-radius:3px 3px 0 0;height:0;transition:height 1.2s cubic-bezier(.16,1,.3,1)}
+.mini-bar.g{background:var(--accent)}.mini-bar.d{background:var(--accent-s)}
+.mini-bar.animate{height:var(--h)}
+/* Animated rows */
+.mini-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--text2);opacity:0;transform:translateX(-12px)}.mini-row:last-child{border:none}
+.mini-row.slide{animation:slideRow .4s cubic-bezier(.16,1,.3,1) forwards}
+.mini-tag{padding:2px 7px;border-radius:100px;font-size:9px;font-weight:600;opacity:0;transform:scale(.7)}
+.mini-tag.pop{animation:popTag .3s cubic-bezier(.16,1,.3,1) forwards}
+.tg{background:rgba(61,213,109,.08);color:var(--green)}
+.ty{background:rgba(255,176,58,.08);color:var(--orange)}
+.tb{background:rgba(91,127,255,.08);color:var(--blue)}
+.tr{background:rgba(255,92,92,.08);color:var(--red)}
+/* Animated gauge SVG */
+.gauge-wrap{text-align:center;padding:4px 0}
+.gauge-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.gauge-bg{fill:none;stroke:var(--bg4);stroke-width:6}
+.gauge-fill{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 2s cubic-bezier(.16,1,.3,1)}
+.gauge-fill.animate{stroke-dashoffset:var(--offset)}
+.gauge-text{font-family:var(--d);font-size:20px;font-weight:800;fill:var(--text)}
+.gauge-pct{font-family:var(--d);font-size:20px;font-weight:800;margin-top:-62px;position:relative;z-index:1}
+.gauge-label{font-size:10px;color:var(--text3);margin-top:6px}
+/* Animated kanban */
+.mini-kan{display:flex;gap:6px}
+.mini-kan-col{flex:1}
+.mini-kan-h{font-size:8px;font-family:var(--m);color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--border)}
+.mini-kan-card{background:var(--bg4);border:1px solid var(--border);border-radius:5px;padding:5px 6px;font-size:9px;color:var(--text2);margin-bottom:3px;opacity:0;transform:translateY(8px)}
+.mini-kan-card.slide{animation:kanSlide .4s cubic-bezier(.16,1,.3,1) forwards}
+/* Mini calendar */
+.mini-cal-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03);opacity:0;transform:translateX(-10px)}.mini-cal-item:last-child{border:none}
+.mini-cal-item.slide{animation:slideRow .4s cubic-bezier(.16,1,.3,1) forwards}
+.mini-cal-date{width:36px;height:36px;border-radius:8px;background:var(--accent-s);display:flex;align-items:center;justify-content:center;font-family:var(--d);font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.mini-cal-info{font-size:11px;color:var(--text2)}.mini-cal-info strong{color:var(--text);font-weight:600;display:block}
+
+/* === MID CTA === */
+.mid-cta{padding:60px 0;text-align:center}
+.mid-cta-box{padding:44px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;position:relative;overflow:hidden}
+.mid-cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(190,255,59,.03),transparent 70%);pointer-events:none}
+.mid-cta-box h3{font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:-.8px;margin-bottom:18px;position:relative;z-index:1}
+.mid-trust{display:flex;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap;position:relative;z-index:1}
+.mt{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
+.mt svg{width:12px;height:12px;color:var(--green)}
+
+/* === HOW === */
+.how{padding:100px 0}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.how-card{padding:28px 22px;text-align:center;position:relative}
+.how-num{width:40px;height:40px;margin:0 auto 14px;background:var(--accent);border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--d);font-weight:800;font-size:17px;color:#000}
+.how-card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.how-card p{font-size:13px;color:var(--text2)}
+.how-arrow{position:absolute;right:-24px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:18px}
+
+/* === TESTI === */
+.testi{padding:100px 0}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px}
+.testi-card{padding:24px}
+.testi-stars{color:var(--accent);font-size:13px;margin-bottom:10px;letter-spacing:1px}
+.testi-q{font-size:15px;font-weight:600;font-family:var(--d);margin-bottom:14px;line-height:1.4}
+.testi-who{display:flex;align-items:center;gap:10px}
+.testi-av{width:32px;height:32px;border-radius:9px;background:var(--accent-s);display:flex;align-items:center;justify-content:center;font-family:var(--d);font-weight:800;font-size:13px;color:var(--accent)}
+.testi-name{font-size:12px;font-weight:600}.testi-role{font-size:11px;color:var(--text3)}
+
+/* === PRICING === */
+.pricing{padding:120px 0}
+.pri-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.pri-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px 26px;position:relative;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.pri-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,.25)}
+.pri-card.pop{border-color:rgba(190,255,59,.2);background:linear-gradient(180deg,rgba(190,255,59,.03),var(--bg2) 40%)}
+.pri-card.pop::before{content:'';position:absolute;inset:-1px;border-radius:20px;padding:1px;background:linear-gradient(180deg,rgba(190,255,59,.25),transparent 55%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.pop-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);padding:5px 16px;background:var(--accent);color:#000;font-family:var(--d);font-size:10px;font-weight:700;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.pri-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.pri-desc{font-size:13px;color:var(--text3);margin-bottom:18px}
+.pri-price{display:flex;align-items:baseline;gap:3px;margin-bottom:4px}
+.pri-val{font-family:var(--d);font-size:46px;font-weight:800;letter-spacing:-2px;line-height:1}
+.pri-cur{font-size:16px;font-weight:600;color:var(--text2)}
+.pri-once{font-size:11px;color:var(--text3);margin-bottom:20px}
+.pri-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.pri-list li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.pri-list li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:11px}
+.pri-btn{display:block;width:100%;padding:14px;text-align:center;border-radius:12px;font-family:var(--d);font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .3s;border:none}
+.pri-btn-main{background:var(--accent);color:#000}.pri-btn-main:hover{box-shadow:0 6px 24px rgba(190,255,59,.3);transform:translateY(-2px)}
+.pri-btn-sec{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.pri-btn-sec:hover{border-color:var(--border2);background:var(--bg4)}
+
+/* === GUARANTEE === */
+.guarantee{padding:60px 0}
+.guar{background:var(--bg2);border:1px solid rgba(190,255,59,.1);border-radius:18px;padding:40px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.guar::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at left,rgba(190,255,59,.02),transparent 60%);pointer-events:none}
+.guar-ico{width:64px;height:64px;border-radius:50%;background:var(--accent-s);border:2px solid rgba(190,255,59,.12);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;animation:glow 3s ease infinite}
+.guar h3{font-size:20px;font-weight:800;margin-bottom:4px}.guar p{font-size:14px;color:var(--text2);max-width:440px}
+
+/* === FAQ === */
+.faq{padding:80px 0 120px}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .3s}.faq-item:hover{border-color:var(--border2)}
+.faq-q{padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--d);font-weight:600;font-size:13px;background:none;border:none;color:var(--text);width:100%;text-align:left}
+.faq-t{width:22px;height:22px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .3s;color:var(--text3)}
+.faq-item.open .faq-t{background:var(--accent-s);color:var(--accent);transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1)}.faq-item.open .faq-a{max-height:160px}
+.faq-a-in{padding:0 20px 18px;font-size:13px;line-height:1.6;color:var(--text2)}
+
+/* === FINAL === */
+.final{padding:100px 0;text-align:center;position:relative}
+.final-orb{position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(190,255,59,.04);filter:blur(140px);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.final-badges{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.fb{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:100px}
+.fb svg{width:12px;height:12px;color:var(--accent)}
+
+footer{padding:28px 0;border-top:1px solid var(--border)}
+.foot{display:flex;justify-content:space-between;align-items:center}
+.foot-t{font-size:11px;color:var(--text3)}
+.foot-links{display:flex;gap:18px}.foot-links a{font-size:11px;color:var(--text3);text-decoration:none;transition:color .25s}.foot-links a:hover{color:var(--text)}
+
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr}.hero-mock{display:none}
+  .feat-grid,.testi-grid{grid-template-columns:repeat(2,1fr)}
+  .pri-grid{grid-template-columns:repeat(2,1fr)}.pri-grid>:last-child{grid-column:1/-1;max-width:420px;margin:0 auto;width:100%}
+  .testi-grid>:last-child{grid-column:1/-1;max-width:420px;margin:0 auto;width:100%}
+  .pain-line{gap:8px}
+  .nav-r .link{display:none}
+  .guar{flex-direction:column;text-align:center;padding:32px 24px}.guar p{margin:0 auto}
+  .nd-thead,.nd-row{grid-template-columns:2fr 1fr 1fr .6fr}
+}
+@media(max-width:768px){
+  .hero{padding:100px 0 50px;min-height:auto}
+  .feat-grid,.testi-grid{grid-template-columns:1fr}.testi-grid>:last-child{max-width:100%}
+  .pri-grid{grid-template-columns:1fr;max-width:380px;margin:0 auto}.pri-grid>:last-child{max-width:100%}
+  .faq-grid{grid-template-columns:1fr}
+  .how-grid{grid-template-columns:1fr;max-width:340px;margin:48px auto 0}.how-arrow{display:none}
+  .hero-ctas{flex-direction:column;align-items:stretch}
+  .hero-trust{flex-direction:column;gap:6px}
+  .foot{flex-direction:column;gap:10px;text-align:center}
+  .final-badges{flex-direction:column;align-items:center}
+  .mid-trust{flex-direction:column;align-items:center}
+  .pain-line{flex-direction:column;align-items:center;gap:24px;max-width:260px;margin:0 auto}
+  .pain-line::before{top:0;bottom:0;left:50%;width:2px;height:100%;transform:translateX(-50%)}
+  .pain-line-fill{top:0;left:50%;width:2px!important;height:0!important;transform:translateX(-50%)}
+  .pain-line.animated .pain-line-fill{height:100%!important;width:2px!important}
+  .pain-step{display:flex;align-items:center;gap:12px;text-align:left}
+  .pain-step-dot{margin:0;flex-shrink:0;width:44px;height:44px;font-size:16px}
+  .nd-wrap{margin:32px auto 0}
+}
+</style>
+</head>
+<body>
+<div class="scroll-bar" id="sb"></div>
+
+<nav id="nav"><div class="nav-in">
+  <a href="#" class="logo"><div class="logo-m">K</div>Koda</a>
+  <div class="nav-r">
+    <a href="#features" class="link">Produit</a>
+    <a href="#pricing" class="link">Tarifs</a>
+    <a href="#pricing" class="btn btn-main" style="padding:10px 20px;font-size:13px">Obtenir Koda <span class="arr">&rarr;</span></a>
+  </div>
+</div></nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-orb ho1"></div><div class="hero-orb ho2"></div>
+  <div class="w"><div class="hero-grid">
+    <div>
+      <h1>Ton activite freelance.<br><span class="grad">Enfin organisee.</span></h1>
+      <p class="hero-p">CRM, factures, URSSAF, prospection — tout dans un seul Notion.</p>
+      <div class="hero-ctas">
+        <a href="#pricing" class="btn btn-main btn-big">Obtenir Koda <span class="arr">&rarr;</span></a>
+        <a href="#features" class="btn btn-out btn-big">Voir le produit</a>
+      </div>
+      <div class="hero-trust">
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Stripe</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>14j garanti</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5 min</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Paiement unique</div>
+      </div>
+    </div>
+    <!-- HERO ANIMATED NOTION MOCKUP -->
+    <div class="hero-mock">
+      <div class="hm">
+        <div class="hm-bar">
+          <div class="hm-dot"></div><div class="hm-dot"></div><div class="hm-dot"></div>
+          <span class="hm-bar-title">Koda &mdash; Dashboard</span>
+        </div>
+        <div class="hm-body">
+          <div class="hm-sidebar">
+            <div class="hm-tab active">Dashboard</div>
+            <div class="hm-tab">Clients</div>
+            <div class="hm-tab">Factures</div>
+            <div class="hm-tab">URSSAF</div>
+          </div>
+          <div class="n-table" id="heroTable">
+            <div class="n-thead">
+              <div class="n-th">Client</div>
+              <div class="n-th">Montant</div>
+              <div class="n-th">Statut</div>
+              <div class="n-th">Paye</div>
+            </div>
+            <div class="n-row" data-delay="600">
+              <div class="n-cell n-name">Studio Mango</div>
+              <div class="n-cell n-val">2 400 &euro;</div>
+              <div class="n-cell"><span class="n-tag" style="background:rgba(61,213,109,.1);color:#3DD56D" data-delay="900">Paye</span></div>
+              <div class="n-cell"><div class="n-check" data-delay="1100"></div></div>
+            </div>
+            <div class="n-row" data-delay="1000">
+              <div class="n-cell n-name">Agence Pixel</div>
+              <div class="n-cell n-val">3 800 &euro;</div>
+              <div class="n-cell"><span class="n-tag" style="background:rgba(255,176,58,.1);color:#FFB03A" data-delay="1300">En attente</span></div>
+              <div class="n-cell"><div class="n-check" data-delay="1500"></div></div>
+            </div>
+            <div class="n-row" data-delay="1400">
+              <div class="n-cell n-name">Startup Nova</div>
+              <div class="n-cell n-val">5 200 &euro;</div>
+              <div class="n-cell"><span class="n-tag" style="background:rgba(91,127,255,.1);color:#5B7FFF" data-delay="1700">En cours</span></div>
+              <div class="n-cell"><div class="n-check" data-delay="1900"></div></div>
+            </div>
+            <div class="n-row" data-delay="1800">
+              <div class="n-cell n-name">Marie Design</div>
+              <div class="n-cell n-val">1 600 &euro;</div>
+              <div class="n-cell"><span class="n-tag" style="background:rgba(61,213,109,.1);color:#3DD56D" data-delay="2100">Paye</span></div>
+              <div class="n-cell"><div class="n-check" data-delay="2300"></div></div>
+            </div>
+          </div>
+          <div class="nd-summary">
+            <div class="nd-sum-item">Total : <strong><span class="nd-sum-val" id="heroTotal">13 000 &euro;</span></strong></div>
+            <div class="nd-sum-item">Paye : <strong><span class="nd-sum-val" id="heroPaid" style="transition-delay:.2s">4 000 &euro;</span></strong></div>
+            <div class="nd-sum-item">En attente : <strong><span class="nd-sum-val" id="heroWait" style="transition-delay:.4s">9 000 &euro;</span></strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ===== PAIN — SINGLE STAT ===== -->
+<section class="pain" id="pain">
+  <div class="pain-bg"></div>
+  <div class="w">
+    <div class="pain-inner a">
+      <div class="pain-big"><span class="pain-counter" data-target="86">0</span><span class="pain-unit">%</span></div>
+      <div class="pain-headline">des entrepreneurs francais <span>perdent entre 500&euro; et 2 000&euro;/an</span> sans meme le savoir.</div>
+      <p class="pain-sub">Penalites URSSAF, factures jamais relancees, plafond depasse. Pas par incompetence — par manque d'outil.</p>
+      <div class="pain-line" id="painLine">
+        <div class="pain-line-fill"></div>
+        <div class="pain-step">
+          <div class="pain-step-dot">&#128680;</div>
+          <div class="pain-step-amount">-400&euro;</div>
+          <div class="pain-step-label">URSSAF oubliee</div>
+          <div class="pain-step-desc">Une declaration en retard = penalites immediates</div>
+        </div>
+        <div class="pain-step">
+          <div class="pain-step-dot">&#128184;</div>
+          <div class="pain-step-amount">-1 200&euro;</div>
+          <div class="pain-step-label">Factures fantomes</div>
+          <div class="pain-step-desc">Jamais relancees, jamais encaissees</div>
+        </div>
+        <div class="pain-step">
+          <div class="pain-step-dot">&#128165;</div>
+          <div class="pain-step-amount">-3 500&euro;</div>
+          <div class="pain-step-label">Plafond depasse</div>
+          <div class="pain-step-desc">TVA retroactive sur toute l'annee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRANSITION — LA SOLUTION ===== -->
+<section class="transition-cta">
+  <div class="w"><div class="tc-box as">
+    <h3>Et si tout tenait dans <span class="grad">un seul espace ?</span></h3>
+    <p>Un cockpit Notion. Tout ce dont un freelance a besoin. Zero outil supplementaire.</p>
+    <a href="#demo" class="btn btn-main btn-big" style="position:relative;z-index:1">Voir Koda en action <span class="arr">&darr;</span></a>
+  </div></div>
+</section>
+
+<!-- ===== ANIMATED NOTION DEMO ===== -->
+<section class="notion-demo" id="demo">
+  <div class="w">
+    <div class="a tc">
+      <div class="label">Demo live</div>
+      <h2 class="title">Koda en action.</h2>
+    </div>
+    <div class="nd-wrap">
+      <div class="nd-window as" id="notionDemo">
+        <div class="nd-bar">
+          <div class="nd-dot"></div><div class="nd-dot"></div><div class="nd-dot"></div>
+          <span class="nd-title">Koda &mdash; Suivi Factures</span>
+        </div>
+        <div class="nd-body">
+          <div class="nd-tabs">
+            <div class="nd-tab" id="ndTabAll">Toutes</div>
+            <div class="nd-tab" id="ndTabPaid">Payees</div>
+            <div class="nd-tab" id="ndTabWait">En attente</div>
+            <div class="nd-tab" id="ndTabLate">En retard</div>
+          </div>
+          <div class="nd-table">
+            <div class="nd-thead">
+              <div class="nd-th">Facture</div>
+              <div class="nd-th">Client</div>
+              <div class="nd-th">Montant</div>
+              <div class="nd-th">Statut</div>
+            </div>
+            <div class="nd-row" data-delay="300">
+              <div class="nd-cell name">KODA-2026-001</div>
+              <div class="nd-cell">Studio Mango</div>
+              <div class="nd-cell nd-amount">2 400 &euro;</div>
+              <div class="nd-cell"><span class="nd-tag" style="background:rgba(61,213,109,.1);color:#3DD56D" data-delay="600">Payee</span></div>
+            </div>
+            <div class="nd-row" data-delay="600">
+              <div class="nd-cell name">KODA-2026-002</div>
+              <div class="nd-cell">Agence Pixel</div>
+              <div class="nd-cell nd-amount">3 800 &euro;</div>
+              <div class="nd-cell"><span class="nd-tag" style="background:rgba(255,176,58,.1);color:#FFB03A" data-delay="900">Envoyee</span></div>
+            </div>
+            <div class="nd-row" data-delay="900">
+              <div class="nd-cell name">KODA-2026-003</div>
+              <div class="nd-cell">Startup Nova</div>
+              <div class="nd-cell nd-amount">5 200 &euro;</div>
+              <div class="nd-cell"><span class="nd-tag" style="background:rgba(91,127,255,.1);color:#5B7FFF" data-delay="1200">En cours</span></div>
+            </div>
+            <div class="nd-row" data-delay="1200">
+              <div class="nd-cell name">KODA-2026-004</div>
+              <div class="nd-cell">Marie Design</div>
+              <div class="nd-cell nd-amount">1 600 &euro;</div>
+              <div class="nd-cell"><span class="nd-tag" style="background:rgba(255,92,92,.1);color:#FF5C5C" data-delay="1500">En retard</span></div>
+            </div>
+            <div class="nd-row" data-delay="1500">
+              <div class="nd-cell name">KODA-2026-005</div>
+              <div class="nd-cell">Tech Solutions</div>
+              <div class="nd-cell nd-amount">4 500 &euro;</div>
+              <div class="nd-cell"><span class="nd-tag" style="background:rgba(61,213,109,.1);color:#3DD56D" data-delay="1800">Payee</span></div>
+            </div>
+          </div>
+          <div class="nd-summary">
+            <div class="nd-sum-item">Total : <strong><span class="nd-sum-val" id="demoTotal">17 500 &euro;</span></strong></div>
+            <div class="nd-sum-item">Encaisse : <strong><span class="nd-sum-val" id="demoPaid" style="transition-delay:.15s">6 900 &euro;</span></strong></div>
+            <div class="nd-sum-item">En attente : <strong><span class="nd-sum-val" id="demoWait" style="transition-delay:.3s">10 600 &euro;</span></strong></div>
+            <div class="nd-sum-item" style="color:var(--red)">Retard : <strong><span class="nd-sum-val" id="demoLate" style="transition-delay:.45s;color:var(--red)">1 600 &euro;</span></strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES — VISUAL MINI UI ===== -->
+<section class="features" id="features"><div class="w">
+  <div class="a tc"><div class="label">Le produit</div><h2 class="title">6 modules. Chacun en action.</h2></div>
+  <div class="feat-grid" style="margin-top:48px">
+
+    <!-- Dashboard CA -->
+    <div class="card feat-card a" id="featChart">
+      <div class="feat-top"><h3>&#128202; Dashboard CA</h3><p>Tes revenus en un coup d'oeil</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-family:var(--d);font-size:18px;font-weight:800;color:var(--accent)">4 200 &euro;</span><span style="font-size:10px;color:var(--text3)">/ 5 000 &euro;</span></div>
+        <div class="mini-chart">
+          <div class="mini-bar d" style="--h:35%"></div>
+          <div class="mini-bar d" style="--h:50%"></div>
+          <div class="mini-bar d" style="--h:40%"></div>
+          <div class="mini-bar d" style="--h:65%"></div>
+          <div class="mini-bar d" style="--h:55%"></div>
+          <div class="mini-bar g" style="--h:84%"></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- CRM -->
+    <div class="card feat-card a d1" id="featCRM">
+      <div class="feat-top"><h3>&#128101; CRM Clients</h3><p>Chaque relation suivie</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div class="mini-row" data-delay="0"><span>Agence Flow</span><span class="mini-tag tg" data-delay="200">Actif</span></div>
+        <div class="mini-row" data-delay="120"><span>Studio Kali</span><span class="mini-tag tg" data-delay="320">Actif</span></div>
+        <div class="mini-row" data-delay="240"><span>Martin D.</span><span class="mini-tag ty" data-delay="440">Devis</span></div>
+        <div class="mini-row" data-delay="360"><span>Tech Innov</span><span class="mini-tag tb" data-delay="560">Prospect</span></div>
+      </div></div>
+    </div>
+
+    <!-- Facturation -->
+    <div class="card feat-card a d2" id="featInvoice">
+      <div class="feat-top"><h3>&#129534; Facturation</h3><p>Du devis au paiement</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div class="mini-row" data-delay="0"><span>KODA-001</span><span class="mini-tag tg" data-delay="200">Payee</span></div>
+        <div class="mini-row" data-delay="120"><span>KODA-002</span><span class="mini-tag ty" data-delay="320">Envoyee</span></div>
+        <div class="mini-row" data-delay="240"><span>KODA-003</span><span class="mini-tag tr" data-delay="440">Retard</span></div>
+        <div class="mini-row" data-delay="360"><span>KODA-004</span><span class="mini-tag tb" data-delay="560">Brouillon</span></div>
+      </div></div>
+    </div>
+
+    <!-- URSSAF -->
+    <div class="card feat-card a d3" id="featURSSAF">
+      <div class="feat-top"><h3>&#127963; Tracker URSSAF</h3><p>Deadlines et cotisations</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div class="mini-cal-item" data-delay="0"><div class="mini-cal-date">15</div><div class="mini-cal-info"><strong>Declaration avril</strong>Cotisations : 924 &euro;</div></div>
+        <div class="mini-cal-item" data-delay="200"><div class="mini-cal-date">15</div><div class="mini-cal-info"><strong>Declaration mai</strong>Cotisations : 1 102 &euro;</div></div>
+      </div></div>
+    </div>
+
+    <!-- Plafond -->
+    <div class="card feat-card a d4" id="featGauge">
+      <div class="feat-top"><h3>&#127919; Jauge Plafond</h3><p>Seuil micro en temps reel</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 90 90">
+            <circle class="gauge-bg" cx="45" cy="45" r="40"/>
+            <circle class="gauge-fill" cx="45" cy="45" r="40" style="--offset:80"/>
+          </svg>
+          <div class="gauge-pct">68%</div>
+          <div class="gauge-label">52 856 &euro; / 77 700 &euro;</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Prospection -->
+    <div class="card feat-card a d5" id="featKanban">
+      <div class="feat-top"><h3>&#128640; Prospection</h3><p>Pipeline visuel Kanban</p></div>
+      <div class="feat-visual"><div class="feat-mini">
+        <div class="mini-kan">
+          <div class="mini-kan-col"><div class="mini-kan-h">Contact</div><div class="mini-kan-card" data-delay="0">Lea M.</div><div class="mini-kan-card" data-delay="150">Paul B.</div></div>
+          <div class="mini-kan-col"><div class="mini-kan-h">Devis</div><div class="mini-kan-card" data-delay="300">Anna K.</div></div>
+          <div class="mini-kan-col"><div class="mini-kan-h">Signe</div><div class="mini-kan-card" data-delay="450" style="border-color:rgba(190,255,59,.15)">Lucas R.</div></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div></section>
+
+<!-- ===== MID CTA ===== -->
+<section class="mid-cta"><div class="w"><div class="mid-cta-box as">
+  <h3 style="position:relative;z-index:1">6 modules. 1 systeme. <span class="grad">0&euro;/mois.</span></h3>
+  <a href="#pricing" class="btn btn-main btn-big" style="position:relative;z-index:1">Voir les offres <span class="arr">&rarr;</span></a>
+  <div class="mid-trust">
+    <div class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Notion gratuit</div>
+    <div class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>5 min d'install</div>
+    <div class="mt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>14j rembourse</div>
+  </div>
+</div></div></section>
+
+<!-- ===== HOW ===== -->
+<section class="how"><div class="w">
+  <div class="a tc"><div class="label">3 etapes</div><h2 class="title">Pret en 5 minutes.</h2></div>
+  <div class="how-grid">
+    <div class="card how-card a"><div class="how-num">1</div><h3>Choisis</h3><p>Solo, Pro ou Business</p><span class="how-arrow">&rarr;</span></div>
+    <div class="card how-card a d2"><div class="how-num">2</div><h3>Duplique</h3><p>Un clic dans Notion</p><span class="how-arrow">&rarr;</span></div>
+    <div class="card how-card a d4"><div class="how-num">3</div><h3>Lance</h3><p>Ton cockpit tourne</p></div>
+  </div>
+</div></section>
+
+<!-- ===== TESTI ===== -->
+<section class="testi" id="testimonials"><div class="w">
+  <div class="a tc"><div class="label">Avis</div><h2 class="title">Ils utilisent Koda.</h2></div>
+  <div class="testi-grid">
+    <div class="card testi-card a"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-q">"4h recuperees par semaine. Je regrette de pas avoir eu ca avant."</div><div class="testi-who"><div class="testi-av">M</div><div><div class="testi-name">Marie L.</div><div class="testi-role">Designer — Lyon</div></div></div></div>
+    <div class="card testi-card a d1"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-q">"Le tracker URSSAF m'a evite 400&euro; de penalite. Game changer."</div><div class="testi-who"><div class="testi-av">T</div><div><div class="testi-name">Thomas R.</div><div class="testi-role">Dev web — Paris</div></div></div></div>
+    <div class="card testi-card a d2"><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="testi-q">"3 clients signes en plus le premier mois. Pour 39&euro; c'est dingue."</div><div class="testi-who"><div class="testi-av">S</div><div><div class="testi-name">Sarah K.</div><div class="testi-role">Consultante — Bordeaux</div></div></div></div>
+  </div>
+</div></section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing" id="pricing"><div class="w">
+  <div class="a tc" style="margin-bottom:48px"><div class="label">Tarifs</div><h2 class="title">Paiement unique. Acces a vie.</h2></div>
+  <div class="pri-grid">
+    <div class="pri-card a">
+      <div class="pri-name">Solo</div><div class="pri-desc">Pour demarrer</div>
+      <div class="pri-price"><span class="pri-val">19</span><span class="pri-cur">&euro;</span></div><div class="pri-once">Paiement unique</div>
+      <ul class="pri-list"><li>Dashboard CA</li><li>CRM (20 clients)</li><li>Facturation basique</li><li>Tracker URSSAF</li><li>Guide demarrage</li></ul>
+      <a href="https://buy.stripe.com/dRm28r3Yhdy9fyb4YE93y0h" class="pri-btn pri-btn-sec">Commencer</a>
+    </div>
+    <div class="pri-card pop a d1">
+      <div class="pop-tag">Le plus choisi</div>
+      <div class="pri-name">Pro</div><div class="pri-desc">Le systeme complet</div>
+      <div class="pri-price"><span class="pri-val">39</span><span class="pri-cur">&euro;</span></div><div class="pri-once">Paiement unique</div>
+      <ul class="pri-list"><li>Tout Solo inclus</li><li>CRM illimite</li><li>Pipeline Kanban</li><li>Jauge plafond micro</li><li>Suivi depenses</li><li>Objectifs</li><li>Templates emails</li></ul>
+      <a href="https://buy.stripe.com/8x200jamF9hTadR1Ms93y0i" class="pri-btn pri-btn-main">Obtenir Pro &rarr;</a>
+    </div>
+    <div class="pri-card a d2">
+      <div class="pri-name">Business</div><div class="pri-desc">Pour scaler</div>
+      <div class="pri-price"><span class="pri-val">59</span><span class="pri-cur">&euro;</span></div><div class="pri-once">Paiement unique</div>
+      <ul class="pri-list"><li>Tout Pro inclus</li><li>Multi-activites</li><li>Sous-traitants</li><li>Previsionnel</li><li>Kit societe</li><li>Automatisations</li><li>Support prioritaire</li></ul>
+      <a href="https://buy.stripe.com/eVq3cvdyRcu5fyb4YE93y0j" class="pri-btn pri-btn-sec">Passer Business</a>
+    </div>
+  </div>
+</div></section>
+
+<!-- ===== GUARANTEE ===== -->
+<section class="guarantee"><div class="w"><div class="guar as">
+  <div class="guar-ico">&#128170;</div>
+  <div><h3>14 jours. Rembourse si ca te plait pas.</h3><p>Un email suffit. Aucune question.</p></div>
+</div></div></section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq" id="faq"><div class="w">
+  <div class="a tc" style="margin-bottom:40px"><div class="label">FAQ</div><h2 class="title">Questions</h2></div>
+  <div class="faq-grid">
+    <div class="faq-item a"><button class="faq-q">C'est quoi Koda ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">Un template Notion pour gerer ton activite freelance en France. Tu dupliques, c'est parti.</div></div></div>
+    <div class="faq-item a d1"><button class="faq-q">Notion gratuit suffit ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">Oui. Koda fonctionne sur le plan gratuit de Notion. Zero abonnement.</div></div></div>
+    <div class="faq-item a d2"><button class="faq-q">Adapte a mon metier ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">Dev, designer, consultant, coach, redacteur — Koda s'adapte a tous les freelances.</div></div></div>
+    <div class="faq-item a d3"><button class="faq-q">Deja en societe ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">L'offre Business inclut un kit passage en societe (SASU/EURL).</div></div></div>
+    <div class="faq-item a d4"><button class="faq-q">Quoi apres l'achat ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">Un lien pour dupliquer le template + un guide. Pret en 5 min.</div></div></div>
+    <div class="faq-item a d5"><button class="faq-q">Mises a jour incluses ?<span class="faq-t">+</span></button><div class="faq-a"><div class="faq-a-in">Oui, a vie. Chaque nouvelle fonctionnalite est gratuite.</div></div></div>
+  </div>
+</div></section>
+
+<!-- ===== FINAL ===== -->
+<section class="final">
+  <div class="final-orb"></div>
+  <div class="w" style="position:relative;z-index:2">
+    <div class="a">
+      <h2 class="title tc">Arrete de subir.<br>Organise-toi.</h2>
+      <div style="text-align:center;margin-top:20px"><a href="#pricing" class="btn btn-main btn-big">Obtenir Koda <span class="arr">&rarr;</span></a></div>
+      <div class="final-badges a d2">
+        <div class="fb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Stripe</div>
+        <div class="fb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>14j garanti</div>
+        <div class="fb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Instantane</div>
+        <div class="fb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Paiement unique</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="w"><div class="foot">
+  <div class="foot-t">&copy; 2026 Koda</div>
+  <div class="foot-links"><a href="mailto:contact@koda.fr">Contact</a><a href="#">Mentions legales</a><a href="#">CGV</a></div>
+</div></div></footer>
+
+<script>
+// Scroll bar + nav
+const sb=document.getElementById('sb');
+window.addEventListener('scroll',()=>{
+  sb.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('s',scrollY>40);
+});
+
+// IntersectionObserver for fade-in
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('v');io.unobserve(x.target)}})},{threshold:.07,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.a,.al,.ar,.as').forEach(e=>io.observe(e));
+
+// Pain counter animation
+const painCounterIO=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,t=+el.dataset.target,dur=1600,start=performance.now();
+(function upd(now){const p=Math.min((now-start)/dur,1);const eased=1-Math.pow(1-p,4);el.textContent=Math.round(t*eased);if(p<1)requestAnimationFrame(upd);else el.style.animation='countPulse .4s ease';})(start);
+painCounterIO.unobserve(el);})},{threshold:.5});
+document.querySelectorAll('.pain-counter').forEach(e=>painCounterIO.observe(e));
+
+// Pain timeline animation
+const painLineIO=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;x.target.classList.add('animated');painLineIO.unobserve(x.target);})},{threshold:.3});
+const pl=document.getElementById('painLine');if(pl)painLineIO.observe(pl);
+
+// Hero animated Notion table
+function animateHeroTable(){
+  const rows=document.querySelectorAll('#heroTable .n-row');
+  rows.forEach(r=>{
+    const d=+r.dataset.delay||0;
+    setTimeout(()=>{r.classList.add('visible');
+      r.querySelectorAll('.n-tag').forEach(tag=>{const td=+tag.dataset.delay||0;setTimeout(()=>tag.classList.add('pop'),td);});
+      r.querySelectorAll('.n-check').forEach(chk=>{const cd=+chk.dataset.delay||0;setTimeout(()=>{chk.classList.add('checked');chk.textContent='\u2713';},cd);});
+    },d);
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('#heroTotal,#heroPaid,#heroWait').forEach(e=>e.classList.add('show'));
+  },2500);
+}
+// Run hero animation after page load
+setTimeout(animateHeroTable,800);
+
+// Notion Demo animated table
+const demoIO=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;
+  // Activate first tab
+  document.getElementById('ndTabAll').classList.add('active');
+  const rows=x.target.querySelectorAll('.nd-row');
+  rows.forEach(r=>{const d=+r.dataset.delay||0;
+    setTimeout(()=>{r.classList.add('show');
+      r.querySelectorAll('.nd-tag').forEach(tag=>{const td=+tag.dataset.delay||0;setTimeout(()=>tag.classList.add('pop'),td);});
+    },d);
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('#demoTotal,#demoPaid,#demoWait,#demoLate').forEach(e=>e.classList.add('show'));
+  },2200);
+  demoIO.unobserve(x.target);
+})},{threshold:.2});
+document.getElementById('notionDemo')&&demoIO.observe(document.getElementById('notionDemo'));
+
+// Feature card animations
+function animateFeature(id,callback){
+  const el=document.getElementById(id);if(!el)return;
+  const fio=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;callback(x.target);fio.unobserve(x.target);})},{threshold:.3});
+  fio.observe(el);
+}
+
+// Chart bars grow
+animateFeature('featChart',el=>{
+  el.querySelectorAll('.mini-bar').forEach((b,i)=>{setTimeout(()=>b.classList.add('animate'),i*100);});
+});
+
+// CRM rows slide in
+animateFeature('featCRM',el=>{
+  el.querySelectorAll('.mini-row').forEach(r=>{const d=+r.dataset.delay||0;
+    setTimeout(()=>{r.classList.add('slide');
+      r.querySelectorAll('.mini-tag').forEach(t=>{const td=+t.dataset.delay||0;setTimeout(()=>t.classList.add('pop'),td);});
+    },d);
+  });
+});
+
+// Invoice rows slide in
+animateFeature('featInvoice',el=>{
+  el.querySelectorAll('.mini-row').forEach(r=>{const d=+r.dataset.delay||0;
+    setTimeout(()=>{r.classList.add('slide');
+      r.querySelectorAll('.mini-tag').forEach(t=>{const td=+t.dataset.delay||0;setTimeout(()=>t.classList.add('pop'),td);});
+    },d);
+  });
+});
+
+// URSSAF calendar items slide in
+animateFeature('featURSSAF',el=>{
+  el.querySelectorAll('.mini-cal-item').forEach(r=>{const d=+r.dataset.delay||0;setTimeout(()=>r.classList.add('slide'),d);});
+});
+
+// Gauge fill animation
+animateFeature('featGauge',el=>{
+  setTimeout(()=>{el.querySelector('.gauge-fill').classList.add('animate');},200);
+});
+
+// Kanban cards slide in
+animateFeature('featKanban',el=>{
+  el.querySelectorAll('.mini-kan-card').forEach(c=>{const d=+c.dataset.delay||0;setTimeout(()=>c.classList.add('slide'),d);});
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+scrollY-70,behavior:'smooth'})})});
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(b=>{b.addEventListener('click',()=>{const i=b.parentElement,o=i.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(x=>x.classList.remove('open'));if(!o)i.classList.add('open')})});
+</script>
+</body>
+</html>
