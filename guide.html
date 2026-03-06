@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koda — Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080C;--bg2:#0F0F15;--bg3:#15151E;--bg4:#1C1C28;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);
+  --text:#F2F0F7;--text2:#A09CB2;--text3:#6B6780;
+  --accent:#BEFF3B;--accent-s:rgba(190,255,59,.08);--accent-m:rgba(190,255,59,.15);
+  --red:#FF5C5C;--green:#3DD56D;--blue:#5B7FFF;--orange:#FFB03A;--purple:#A78BFA;
+  --d:'Plus Jakarta Sans',sans-serif;--b:'Inter',sans-serif;--m:'JetBrains Mono',monospace;
+  --sidebar-w:280px;--topbar-h:64px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--b);font-size:15px;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+h1,h2,h3,h4,h5{font-family:var(--d);line-height:1.25}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ===========================
+   LOGIN SCREEN
+   =========================== */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden}
+#login-screen .orb{position:absolute;border-radius:50%;filter:blur(140px);pointer-events:none}
+#login-screen .orb-1{width:500px;height:500px;background:rgba(190,255,59,.06);top:-180px;right:-100px;animation:float 9s ease infinite}
+#login-screen .orb-2{width:300px;height:300px;background:rgba(91,127,255,.05);bottom:-60px;left:-60px;animation:float 12s ease infinite 3s}
+#login-screen .orb-3{width:250px;height:250px;background:rgba(167,139,250,.04);top:40%;left:10%;animation:float 15s ease infinite 1.5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+.login-box{position:relative;z-index:2;width:100%;max-width:420px;padding:0 24px}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;box-shadow:0 32px 80px rgba(0,0,0,.5)}
+.login-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:32px}
+.login-logo .logo-icon{width:40px;height:40px;background:var(--accent);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;transform:rotate(-3deg)}
+.login-logo .logo-text{font-family:var(--d);font-weight:800;font-size:26px;letter-spacing:-.8px;color:var(--text)}
+.login-card h2{font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:-.3px}
+.login-card .login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:28px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;font-family:var(--d)}
+.form-group input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--b);font-size:14px;outline:none;transition:border-color .25s,box-shadow .25s}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(190,255,59,.1)}
+.form-group input::placeholder{color:var(--text3)}
+.btn-login{width:100%;padding:14px 24px;background:var(--accent);color:#000;font-family:var(--d);font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);margin-top:4px}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(190,255,59,.3)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+.login-forgot{display:block;text-align:center;margin-top:18px;font-size:12px;color:var(--text3);cursor:pointer;transition:color .2s;background:none;border:none;font-family:var(--b)}
+.login-forgot:hover{color:var(--accent)}
+.login-msg{margin-top:14px;padding:10px 14px;border-radius:10px;font-size:13px;display:none;text-align:center;line-height:1.4}
+.login-msg.error{display:block;background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.2);color:var(--red)}
+.login-msg.success{display:block;background:rgba(61,213,109,.1);border:1px solid rgba(61,213,109,.2);color:var(--green)}
+
+/* ===========================
+   GUIDE LAYOUT
+   =========================== */
+#guide-screen{display:none}
+#guide-screen.active{display:block}
+#login-screen.hidden{display:none}
+
+/* Topbar */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:rgba(8,8,12,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;display:flex;align-items:center;padding:0 24px}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;width:100%}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.topbar-logo .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;transform:rotate(-3deg)}
+.topbar-logo .logo-text{font-family:var(--d);font-weight:800;font-size:20px;letter-spacing:-.7px;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-email{font-size:12px;color:var(--text3);font-family:var(--m)}
+.topbar-btn{padding:8px 16px;font-family:var(--d);font-weight:600;font-size:12px;border-radius:8px;cursor:pointer;transition:all .25s;border:none}
+.topbar-btn.btn-pwd{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.topbar-btn.btn-pwd:hover{border-color:rgba(255,255,255,.18);color:var(--text)}
+.topbar-btn.btn-logout{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.15)}
+.topbar-btn.btn-logout:hover{background:rgba(255,92,92,.18)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:all .3s}
+
+/* Sidebar */
+.sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:20px 0;z-index:90;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.sidebar-nav{list-style:none}
+.sidebar-nav li a{display:flex;align-items:center;gap:10px;padding:10px 24px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;transition:all .2s;border-left:3px solid transparent;margin-bottom:1px}
+.sidebar-nav li a:hover{color:var(--text);background:rgba(255,255,255,.02)}
+.sidebar-nav li a.active{color:var(--accent);background:var(--accent-s);border-left-color:var(--accent);font-weight:600}
+.sidebar-nav li a .nav-emoji{font-size:16px;width:24px;text-align:center;flex-shrink:0}
+.sidebar-nav li a .nav-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Main content */
+.main-content{margin-left:var(--sidebar-w);padding-top:var(--topbar-h);min-height:100vh}
+.guide-body{max-width:860px;margin:0 auto;padding:48px 40px 100px}
+
+/* ===========================
+   GUIDE TYPOGRAPHY & COMPONENTS
+   =========================== */
+.section{margin-bottom:72px;scroll-margin-top:calc(var(--topbar-h) + 24px)}
+.section-title{font-size:clamp(24px,3.5vw,32px);font-weight:800;letter-spacing:-.8px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.section-title .emoji{font-size:28px}
+.section-subtitle{font-size:14px;color:var(--text3);margin-bottom:32px;line-height:1.6}
+
+/* Step numbers */
+.step{margin-bottom:40px}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.step-num{width:36px;height:36px;background:var(--accent);color:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--d);font-weight:800;font-size:16px;flex-shrink:0}
+.step-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+
+/* Cards */
+.guide-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:border-color .3s}
+.guide-card:hover{border-color:var(--border2)}
+.guide-card h4{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.guide-card p,.guide-card li{font-size:14px;color:var(--text2);line-height:1.7}
+
+/* Database table styling */
+.db-table{width:100%;border-collapse:collapse;margin:16px 0}
+.db-table thead{position:sticky;top:0}
+.db-table th{text-align:left;padding:10px 14px;font-size:11px;font-family:var(--m);font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.db-table th:first-child{border-radius:8px 0 0 0}
+.db-table th:last-child{border-radius:0 8px 0 0}
+.db-table td{padding:10px 14px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top}
+.db-table td:first-child{color:var(--text);font-weight:600}
+.db-table tr:last-child td{border-bottom:none}
+.db-table tr:hover td{background:rgba(255,255,255,.015)}
+.db-table .type-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-family:var(--m);font-weight:500;background:var(--bg4);color:var(--text2)}
+.db-table .type-formula{background:rgba(190,255,59,.08);color:var(--accent)}
+.db-table .type-relation{background:rgba(91,127,255,.1);color:var(--blue)}
+
+/* Code blocks */
+.code-block{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:var(--m);font-size:12px;color:var(--accent);line-height:1.7;overflow-x:auto;margin:12px 0;white-space:pre-wrap;word-break:break-word}
+code{font-family:var(--m);font-size:12px;background:var(--bg3);padding:2px 7px;border-radius:5px;color:var(--accent)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--d);text-transform:uppercase;letter-spacing:.5px;margin-left:8px;vertical-align:middle}
+.badge-pro{background:rgba(91,127,255,.12);color:var(--blue);border:1px solid rgba(91,127,255,.2)}
+.badge-business{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.badge-solo{background:rgba(190,255,59,.1);color:var(--accent);border:1px solid rgba(190,255,59,.2)}
+
+/* Tip boxes */
+.tip-box{background:linear-gradient(135deg,rgba(190,255,59,.04),rgba(190,255,59,.01));border:1px solid rgba(190,255,59,.12);border-radius:12px;padding:18px 22px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.tip-box .tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.tip-box .tip-content{font-size:13px;color:var(--text2);line-height:1.6}
+.tip-box .tip-content strong{color:var(--accent)}
+
+.warning-box{background:rgba(255,176,58,.04);border:1px solid rgba(255,176,58,.12);border-radius:12px;padding:18px 22px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.warning-box .tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.warning-box .tip-content{font-size:13px;color:var(--text2);line-height:1.6}
+.warning-box .tip-content strong{color:var(--orange)}
+
+/* Ordered lists styled */
+.guide-ol{list-style:none;counter-reset:guide-counter;padding:0;margin:12px 0}
+.guide-ol li{counter-increment:guide-counter;padding:8px 0 8px 40px;position:relative;font-size:14px;color:var(--text2);line-height:1.6}
+.guide-ol li::before{content:counter(guide-counter);position:absolute;left:0;top:8px;width:26px;height:26px;background:var(--bg4);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--d);font-weight:700;font-size:12px;color:var(--accent)}
+.guide-ol li strong{color:var(--text)}
+
+/* Unordered lists */
+.guide-ul{list-style:none;padding:0;margin:12px 0}
+.guide-ul li{padding:6px 0 6px 24px;position:relative;font-size:14px;color:var(--text2);line-height:1.6}
+.guide-ul li::before{content:'';position:absolute;left:6px;top:14px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.guide-ul li strong{color:var(--text)}
+
+/* Views grid */
+.views-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0}
+.view-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text2);font-weight:500}
+.view-chip .view-icon{font-size:14px}
+.view-chip strong{color:var(--text);font-weight:600}
+
+/* Callout blocks */
+.callout-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.callout-item{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .3s}
+.callout-item:hover{border-color:var(--border2)}
+.callout-item .callout-emoji{font-size:24px;margin-bottom:8px;display:block}
+.callout-item h5{font-size:14px;font-weight:700;margin-bottom:4px}
+.callout-item p{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* Pricing comparison */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.pricing-col{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;transition:border-color .3s}
+.pricing-col:hover{border-color:var(--border2)}
+.pricing-col.highlight{border-color:rgba(190,255,59,.2);position:relative}
+.pricing-col.highlight::before{content:'POPULAIRE';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-family:var(--d);font-size:9px;font-weight:800;padding:3px 12px;border-radius:100px;letter-spacing:1px}
+.pricing-col h5{font-size:16px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.pricing-col .price{font-family:var(--d);font-size:28px;font-weight:800;color:var(--accent);margin-bottom:12px}
+.pricing-col .price span{font-size:14px;color:var(--text3);font-weight:400}
+.pricing-col ul{list-style:none;padding:0}
+.pricing-col ul li{padding:5px 0;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.pricing-col ul li::before{content:'✓';color:var(--accent);font-weight:700;font-size:12px}
+
+/* Checklist */
+.checklist{list-style:none;padding:0;margin:16px 0}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:13px;color:var(--text2);transition:all .2s;cursor:default}
+.checklist li:hover{border-color:var(--border2);background:var(--bg4)}
+.checklist li .check-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .3s;cursor:pointer}
+.checklist li .check-box.checked{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* Divider */
+.guide-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:48px 0;border:none}
+
+/* Section card wrapper for databases */
+.db-section{margin-bottom:28px}
+.db-section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.db-section-header .db-emoji{font-size:22px}
+.db-section-header h4{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.db-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.db-card-body{padding:0;overflow-x:auto}
+.db-card-footer{padding:14px 20px;border-top:1px solid var(--border);background:var(--bg3)}
+.db-card-footer-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;font-family:var(--d)}
+
+/* Mon compte section */
+.account-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:480px}
+.account-card h4{font-size:16px;font-weight:700;margin-bottom:20px}
+.account-info{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg3);border-radius:10px;margin-bottom:24px}
+.account-avatar{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#000;font-family:var(--d)}
+.account-email{font-size:13px;color:var(--text2);font-family:var(--m)}
+
+/* Password change form in "Mon compte" */
+.pwd-form{margin-top:8px}
+.pwd-form .form-group{margin-bottom:14px}
+.pwd-form .form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;font-family:var(--d)}
+.pwd-form .form-group input{width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--b);font-size:13px;outline:none;transition:border-color .25s,box-shadow .25s}
+.pwd-form .form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(190,255,59,.1)}
+.pwd-form .btn-save{padding:11px 24px;background:var(--accent);color:#000;font-family:var(--d);font-weight:700;font-size:13px;border:none;border-radius:10px;cursor:pointer;transition:all .3s}
+.pwd-form .btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(190,255,59,.25)}
+.pwd-form .btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.pwd-msg{margin-top:12px;padding:10px 14px;border-radius:10px;font-size:13px;display:none;line-height:1.4}
+.pwd-msg.error{display:block;background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.2);color:var(--red)}
+.pwd-msg.success{display:block;background:rgba(61,213,109,.1);border:1px solid rgba(61,213,109,.2);color:var(--green)}
+
+/* ===========================
+   MODAL
+   =========================== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
+.modal-overlay.active{display:flex;opacity:1}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px;width:100%;max-width:420px;position:relative;transform:scale(.95);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.modal-overlay.active .modal{transform:scale(1)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal .modal-sub{font-size:13px;color:var(--text3);margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--bg4);color:var(--text)}
+
+/* ===========================
+   MOBILE
+   =========================== */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:85;display:none}
+  .sidebar-overlay.active{display:block}
+  .main-content{margin-left:0}
+  .hamburger{display:flex;flex-direction:column;justify-content:center}
+  .topbar-email{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .guide-body{padding:32px 20px 80px}
+  .callout-grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .topbar-right{gap:8px}
+  .topbar-btn{padding:6px 10px;font-size:11px}
+  .login-card{padding:28px 22px}
+  .section-title{font-size:22px}
+}
+
+/* Transitions */
+.fade-in{animation:fadeIn .5s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- ===========================
+     LOGIN SCREEN
+     =========================== -->
+<div id="login-screen">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="login-box">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon">K</div>
+        <div class="logo-text">Koda</div>
+      </div>
+      <h2>Accede a ton espace Koda</h2>
+      <p class="login-sub">Connecte-toi pour acceder au guide complet</p>
+      <form id="login-form" autocomplete="on">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="ton@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Mot de passe</label>
+          <input type="password" id="login-password" placeholder="Ton mot de passe" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login" id="btn-login">Se connecter</button>
+      </form>
+      <button class="login-forgot" id="btn-forgot">Mot de passe oublie ?</button>
+      <div id="login-msg" class="login-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     GUIDE SCREEN
+     =========================== -->
+<div id="guide-screen">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:16px">
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <a href="#" class="topbar-logo" onclick="return false;">
+          <div class="logo-icon">K</div>
+          <div class="logo-text">Koda</div>
+        </a>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-email" id="topbar-email"></span>
+        <button class="topbar-btn btn-pwd" id="btn-open-pwd-modal">Changer mot de passe</button>
+        <button class="topbar-btn btn-logout" id="btn-logout">Deconnexion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li><a href="#vue-ensemble" class="active"><span class="nav-emoji">&#127968;</span><span class="nav-label">Vue d'ensemble</span></a></li>
+      <li><a href="#clients"><span class="nav-emoji">&#128101;</span><span class="nav-label">Clients</span></a></li>
+      <li><a href="#projets"><span class="nav-emoji">&#128203;</span><span class="nav-label">Projets</span></a></li>
+      <li><a href="#factures"><span class="nav-emoji">&#129534;</span><span class="nav-label">Factures</span></a></li>
+      <li><a href="#urssaf"><span class="nav-emoji">&#127963;</span><span class="nav-label">URSSAF</span></a></li>
+      <li><a href="#depenses"><span class="nav-emoji">&#128176;</span><span class="nav-label">Depenses</span></a></li>
+      <li><a href="#objectifs"><span class="nav-emoji">&#127919;</span><span class="nav-label">Objectifs</span></a></li>
+      <li><a href="#dashboard"><span class="nav-emoji">&#127912;</span><span class="nav-label">Dashboard</span></a></li>
+      <li><a href="#modules-business"><span class="nav-emoji">&#128230;</span><span class="nav-label">Modules Business</span></a></li>
+      <li><a href="#livraison-stripe"><span class="nav-emoji">&#128640;</span><span class="nav-label">Livraison &amp; Stripe</span></a></li>
+      <li><a href="#mon-compte"><span class="nav-emoji">&#9881;&#65039;</span><span class="nav-label">Mon compte</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <div class="guide-body">
+
+      <!-- ==============================
+           SECTION 1: VUE D'ENSEMBLE
+           ============================== -->
+      <section class="section" id="vue-ensemble">
+        <h2 class="section-title"><span class="emoji">&#127968;</span> Vue d'ensemble</h2>
+        <p class="section-subtitle">Ce guide te permet de construire le template Notion "Koda" etape par etape. Chaque section decrit exactement quoi creer, avec les proprietes, les formules et la structure. Suis les etapes dans l'ordre.</p>
+
+        <div class="guide-card">
+          <h4>&#128640; Etape 1 &mdash; Creer l'espace de travail</h4>
+          <ol class="guide-ol">
+            <li>Ouvre <strong>Notion</strong> et cree une <strong>nouvelle page</strong></li>
+            <li>Nomme-la <strong>"&#127968; Koda &mdash; Mon activite freelance"</strong></li>
+            <li>Ajoute une icone : emoji &#128293; ou le logo Koda</li>
+            <li>Ajoute une cover : utilise une image minimaliste sombre (<code>unsplash.com</code>, cherche "dark gradient abstract")</li>
+            <li>Cette page sera ta <strong>page d'accueil / dashboard</strong></li>
+          </ol>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-icon">&#128161;</span>
+          <div class="tip-content"><strong>Astuce :</strong> Tu vas creer 6 bases de donnees en tant que pages separees, puis tu les lieras au dashboard. Suis chaque section ci-dessous dans l'ordre pour un resultat optimal.</div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 2: CLIENTS
+           ============================== -->
+      <section class="section" id="clients">
+        <h2 class="section-title"><span class="emoji">&#128101;</span> Base de donnees : Clients</h2>
+        <p class="section-subtitle">Cree une base de donnees "Table" avec les proprietes suivantes. C'est ton CRM pour suivre chaque client du premier contact a la facturation.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Nom</td><td><span class="type-tag">Titre</span></td><td>Nom du client</td></tr>
+                <tr><td>Statut</td><td><span class="type-tag">Selection</span></td><td>Prospect / Devis envoye / Actif / Termine / Perdu</td></tr>
+                <tr><td>Email</td><td><span class="type-tag">Email</span></td><td>Email de contact</td></tr>
+                <tr><td>Telephone</td><td><span class="type-tag">Telephone</span></td><td>Numero de telephone</td></tr>
+                <tr><td>Entreprise</td><td><span class="type-tag">Texte</span></td><td>Nom de l'entreprise</td></tr>
+                <tr><td>Secteur</td><td><span class="type-tag">Selection</span></td><td>Tech / Marketing / Design / Commerce / Sante / Education / Autre</td></tr>
+                <tr><td>CA total</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Chiffre d'affaires genere par ce client</td></tr>
+                <tr><td>Premier contact</td><td><span class="type-tag">Date</span></td><td>Date du premier contact</td></tr>
+                <tr><td>Notes</td><td><span class="type-tag">Texte</span></td><td>Notes libres</td></tr>
+                <tr><td>Projets</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers la base "Projets"</td></tr>
+                <tr><td>Factures</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers la base "Factures"</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; triee par Statut</div>
+              <div class="view-chip"><span class="view-icon">&#128203;</span><strong>Kanban</strong>&nbsp;&mdash; groupee par Statut</div>
+              <div class="view-chip"><span class="view-icon">&#128444;&#65039;</span><strong>Galerie</strong>&nbsp;&mdash; apercu visuel</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-icon">&#128161;</span>
+          <div class="tip-content"><strong>Vue Kanban :</strong> C'est ta vue CRM visuelle. Tu peux glisser-deposer les clients entre les colonnes Prospect, Devis envoye, Actif, etc.</div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 3: PROJETS
+           ============================== -->
+      <section class="section" id="projets">
+        <h2 class="section-title"><span class="emoji">&#128203;</span> Base de donnees : Projets</h2>
+        <p class="section-subtitle">Gere tous tes projets avec un suivi detaille du statut, des montants et des delais.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Nom du projet</td><td><span class="type-tag">Titre</span></td><td>Nom du projet</td></tr>
+                <tr><td>Client</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers base "Clients"</td></tr>
+                <tr><td>Statut</td><td><span class="type-tag">Selection</span></td><td>A venir / En cours / En review / Termine / Annule</td></tr>
+                <tr><td>Priorite</td><td><span class="type-tag">Selection</span></td><td>Haute / Moyenne / Basse</td></tr>
+                <tr><td>Montant</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Montant du projet</td></tr>
+                <tr><td>Date debut</td><td><span class="type-tag">Date</span></td><td>Debut du projet</td></tr>
+                <tr><td>Date fin</td><td><span class="type-tag">Date</span></td><td>Fin prevue</td></tr>
+                <tr><td>Acompte recu</td><td><span class="type-tag">Case a cocher</span></td><td>Acompte paye oui/non</td></tr>
+                <tr><td>Livrable</td><td><span class="type-tag">Texte</span></td><td>Description du livrable</td></tr>
+                <tr><td>Factures</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers base "Factures"</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; vue complete</div>
+              <div class="view-chip"><span class="view-icon">&#128203;</span><strong>Kanban</strong>&nbsp;&mdash; par Statut</div>
+              <div class="view-chip"><span class="view-icon">&#128197;</span><strong>Timeline</strong>&nbsp;&mdash; dates debut/fin</div>
+              <div class="view-chip"><span class="view-icon">&#128270;</span><strong>"En cours"</strong>&nbsp;&mdash; filtre Statut</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-icon">&#128161;</span>
+          <div class="tip-content"><strong>Vue Timeline :</strong> Utilise la vue Gantt de Notion avec les proprietes Date debut et Date fin pour visualiser la charge de travail sur le calendrier.</div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 4: FACTURES
+           ============================== -->
+      <section class="section" id="factures">
+        <h2 class="section-title"><span class="emoji">&#129534;</span> Base de donnees : Factures</h2>
+        <p class="section-subtitle">Suivi complet de ta facturation avec calcul automatique de la TVA, detection des retards et vue par mois.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Numero facture</td><td><span class="type-tag">Titre</span></td><td>Format : <code>KODA-2026-001</code></td></tr>
+                <tr><td>Client</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers base "Clients"</td></tr>
+                <tr><td>Projet</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers base "Projets"</td></tr>
+                <tr><td>Montant HT</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Montant hors taxes</td></tr>
+                <tr><td>TVA applicable</td><td><span class="type-tag">Case a cocher</span></td><td>Si franchise en base : decoche</td></tr>
+                <tr>
+                  <td>Montant TTC</td>
+                  <td><span class="type-tag type-formula">Formule</span></td>
+                  <td>
+                    <div class="code-block">if(prop("TVA applicable"), prop("Montant HT") * 1.2, prop("Montant HT"))</div>
+                  </td>
+                </tr>
+                <tr><td>Statut</td><td><span class="type-tag">Selection</span></td><td>Brouillon / Envoyee / Payee / En retard / Annulee</td></tr>
+                <tr><td>Date d'emission</td><td><span class="type-tag">Date</span></td><td>Date d'envoi</td></tr>
+                <tr><td>Date d'echeance</td><td><span class="type-tag">Date</span></td><td>Date limite de paiement</td></tr>
+                <tr><td>Date de paiement</td><td><span class="type-tag">Date</span></td><td>Date effective du paiement</td></tr>
+                <tr>
+                  <td>Jours de retard</td>
+                  <td><span class="type-tag type-formula">Formule</span></td>
+                  <td>
+                    <div class="code-block">if(prop("Statut") == "Payee", 0, if(prop("Date d'echeance") &lt; now(), dateBetween(now(), prop("Date d'echeance"), "days"), 0))</div>
+                  </td>
+                </tr>
+                <tr><td>Mode de paiement</td><td><span class="type-tag">Selection</span></td><td>Virement / Carte / PayPal / Cheque</td></tr>
+                <tr><td>Notes</td><td><span class="type-tag">Texte</span></td><td>Notes internes</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; triee par date</div>
+              <div class="view-chip"><span class="view-icon">&#128184;</span><strong>"A encaisser"</strong>&nbsp;&mdash; Envoyee/En retard</div>
+              <div class="view-chip"><span class="view-icon">&#128680;</span><strong>"En retard"</strong>&nbsp;&mdash; filtre retard</div>
+              <div class="view-chip"><span class="view-icon">&#128203;</span><strong>Kanban</strong>&nbsp;&mdash; par Statut</div>
+              <div class="view-chip"><span class="view-icon">&#128197;</span><strong>Par mois</strong>&nbsp;&mdash; groupee date</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <span class="tip-icon">&#9888;&#65039;</span>
+          <div class="tip-content"><strong>Important :</strong> La formule "Jours de retard" calcule automatiquement le nombre de jours depasses si la facture n'est pas encore payee et que la date d'echeance est passee.</div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 5: URSSAF
+           ============================== -->
+      <section class="section" id="urssaf">
+        <h2 class="section-title"><span class="emoji">&#127963;</span> Base de donnees : Declarations URSSAF</h2>
+        <p class="section-subtitle">Ne rate plus aucune declaration. Suivi des cotisations avec calcul automatique et calendrier des echeances.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Periode</td><td><span class="type-tag">Titre</span></td><td>Ex : "Mars 2026" ou "T1 2026"</td></tr>
+                <tr><td>Type</td><td><span class="type-tag">Selection</span></td><td>Mensuelle / Trimestrielle</td></tr>
+                <tr><td>CA declare</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Chiffre d'affaires de la periode</td></tr>
+                <tr><td>Taux cotisations</td><td><span class="type-tag">Nombre (%)</span></td><td>21.1% (prestation de service) ou 12.3% (vente)</td></tr>
+                <tr>
+                  <td>Cotisations dues</td>
+                  <td><span class="type-tag type-formula">Formule</span></td>
+                  <td>
+                    <div class="code-block">prop("CA declare") * prop("Taux cotisations") / 100</div>
+                  </td>
+                </tr>
+                <tr><td>Date limite</td><td><span class="type-tag">Date</span></td><td>Date limite de declaration</td></tr>
+                <tr><td>Declare</td><td><span class="type-tag">Case a cocher</span></td><td>Fait oui/non</td></tr>
+                <tr><td>Paye</td><td><span class="type-tag">Case a cocher</span></td><td>Paye oui/non</td></tr>
+                <tr><td>Notes</td><td><span class="type-tag">Texte</span></td><td>Notes</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; triee par Date limite</div>
+              <div class="view-chip"><span class="view-icon">&#9989;</span><strong>"A faire"</strong>&nbsp;&mdash; Declare = non</div>
+              <div class="view-chip"><span class="view-icon">&#128197;</span><strong>Calendrier</strong>&nbsp;&mdash; par Date limite</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-icon">&#128161;</span>
+          <div class="tip-content"><strong>Taux de cotisation :</strong> En micro-entreprise, le taux est de <strong>21.1%</strong> pour les prestations de service (BNC) et <strong>12.3%</strong> pour la vente de marchandises (BIC). Adapte selon ta situation.</div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 6: DEPENSES
+           ============================== -->
+      <section class="section" id="depenses">
+        <h2 class="section-title"><span class="emoji">&#128176;</span> Base de donnees : Depenses <span class="badge badge-pro">Pro</span><span class="badge badge-business">Business</span></h2>
+        <p class="section-subtitle">Suis tes depenses professionnelles, identifie les charges recurrentes et conserve tes justificatifs.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Description</td><td><span class="type-tag">Titre</span></td><td>Ex : "Abonnement Figma"</td></tr>
+                <tr><td>Categorie</td><td><span class="type-tag">Selection</span></td><td>Logiciels / Materiel / Formation / Deplacements / Repas / Comptabilite / Marketing / Autre</td></tr>
+                <tr><td>Montant</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Montant de la depense</td></tr>
+                <tr><td>Date</td><td><span class="type-tag">Date</span></td><td>Date de la depense</td></tr>
+                <tr><td>Recurrent</td><td><span class="type-tag">Case a cocher</span></td><td>Depense mensuelle recurrente ?</td></tr>
+                <tr><td>Justificatif</td><td><span class="type-tag">Fichier</span></td><td>Upload du justificatif (photo/PDF)</td></tr>
+                <tr><td>Notes</td><td><span class="type-tag">Texte</span></td><td>Notes</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; triee par date</div>
+              <div class="view-chip"><span class="view-icon">&#128193;</span><strong>Par categorie</strong>&nbsp;&mdash; groupee</div>
+              <div class="view-chip"><span class="view-icon">&#128260;</span><strong>"Recurrentes"</strong>&nbsp;&mdash; filtre</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 7: OBJECTIFS
+           ============================== -->
+      <section class="section" id="objectifs">
+        <h2 class="section-title"><span class="emoji">&#127919;</span> Base de donnees : Objectifs <span class="badge badge-pro">Pro</span><span class="badge badge-business">Business</span></h2>
+        <p class="section-subtitle">Definis tes objectifs de revenus, de nombre de clients ou de projets. Suis ta progression en temps reel.</p>
+
+        <div class="db-card">
+          <div class="db-card-body">
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Propriete</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Objectif</td><td><span class="type-tag">Titre</span></td><td>Ex : "Atteindre 5000&#8364; de CA en mars"</td></tr>
+                <tr><td>Type</td><td><span class="type-tag">Selection</span></td><td>Revenu / Clients / Projets / Personnel</td></tr>
+                <tr><td>Periode</td><td><span class="type-tag">Selection</span></td><td>Mensuel / Trimestriel / Annuel</td></tr>
+                <tr><td>Valeur cible</td><td><span class="type-tag">Nombre</span></td><td>Objectif chiffre</td></tr>
+                <tr><td>Valeur actuelle</td><td><span class="type-tag">Nombre</span></td><td>Progression actuelle</td></tr>
+                <tr>
+                  <td>Progression</td>
+                  <td><span class="type-tag type-formula">Formule</span></td>
+                  <td>
+                    <div class="code-block">round(prop("Valeur actuelle") / prop("Valeur cible") * 100)</div>
+                  </td>
+                </tr>
+                <tr><td>Deadline</td><td><span class="type-tag">Date</span></td><td>Date limite</td></tr>
+                <tr>
+                  <td>Atteint</td>
+                  <td><span class="type-tag type-formula">Formule</span></td>
+                  <td>
+                    <div class="code-block">if(prop("Valeur actuelle") >= prop("Valeur cible"), true, false)</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-card-footer">
+            <div class="db-card-footer-title">Vues a creer</div>
+            <div class="views-grid">
+              <div class="view-chip"><span class="view-icon">&#128202;</span><strong>Table</strong>&nbsp;&mdash; vue complete</div>
+              <div class="view-chip"><span class="view-icon">&#127919;</span><strong>"En cours"</strong>&nbsp;&mdash; Atteint = non</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 8: DASHBOARD
+           ============================== -->
+      <section class="section" id="dashboard">
+        <h2 class="section-title"><span class="emoji">&#127912;</span> Construire le Dashboard</h2>
+        <p class="section-subtitle">Retourne sur ta page d'accueil "&#127968; Koda". Structure-la comme suit pour avoir une vue globale de ton activite.</p>
+
+        <!-- En-tete -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">1</div>
+            <h3 class="step-title">En-tete de la page</h3>
+          </div>
+          <div class="guide-card">
+            <div class="code-block" style="font-size:14px;color:var(--text)">&#128293; Koda
+Bienvenue [Prenom]. Voici le point sur ton activite.</div>
+          </div>
+        </div>
+
+        <!-- Bloc 1 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <h3 class="step-title">Vue d'ensemble rapide (callout blocks)</h3>
+          </div>
+          <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Cree 3 callouts cote a cote en utilisant les colonnes Notion :</p>
+          <div class="callout-grid">
+            <div class="callout-item">
+              <span class="callout-emoji">&#128202;</span>
+              <h5>CA ce mois</h5>
+              <p>Vue liee de "Factures" filtree sur le mois en cours, Statut = Payee. Affiche la somme du Montant HT.</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#129534;</span>
+              <h5>Factures en attente</h5>
+              <p>Vue liee de "Factures", filtre Statut = Envoyee ou En retard. Compte le nombre.</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#127919;</span>
+              <h5>Objectif mensuel</h5>
+              <p>Vue liee de "Objectifs", filtre Periode = Mensuel + mois en cours.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloc 2 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">3</div>
+            <h3 class="step-title">Plafond Micro-entrepreneur</h3>
+          </div>
+          <div class="guide-card">
+            <h4>&#127963; Plafond Micro-entrepreneur 2026</h4>
+            <ul class="guide-ul">
+              <li><strong>Prestations de service :</strong> 77 700 &#8364; / an</li>
+              <li><strong>Vente de marchandises :</strong> 188 700 &#8364; / an</li>
+              <li><strong>CA cumule :</strong> ajoute une vue liee des factures payees de l'annee en cours</li>
+            </ul>
+          </div>
+          <div class="warning-box">
+            <span class="tip-icon">&#9888;&#65039;</span>
+            <div class="tip-content"><strong>Attention :</strong> En depassant ces plafonds, tu sors du regime micro-entreprise. Surveille ton CA cumule regulierement.</div>
+          </div>
+        </div>
+
+        <!-- Bloc 3 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">4</div>
+            <h3 class="step-title">Actions rapides</h3>
+          </div>
+          <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Cree une section avec des liens internes vers tes bases de donnees :</p>
+          <div class="callout-grid">
+            <div class="callout-item">
+              <span class="callout-emoji">&#10133;</span>
+              <h5>Nouveau client</h5>
+              <p>Lien vers la base Clients</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#10133;</span>
+              <h5>Nouvelle facture</h5>
+              <p>Lien vers la base Factures</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#10133;</span>
+              <h5>Nouvelle depense</h5>
+              <p>Lien vers la base Depenses</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#128197;</span>
+              <h5>Declarations URSSAF</h5>
+              <p>Lien vers la base URSSAF</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloc 4 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">5</div>
+            <h3 class="step-title">Vues rapides</h3>
+          </div>
+          <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Ajoute des vues liees (linked views) directement sur ton dashboard :</p>
+          <div class="callout-grid">
+            <div class="callout-item">
+              <span class="callout-emoji">&#128101;</span>
+              <h5>Clients actifs</h5>
+              <p>Vue liee de Clients, filtre Statut = Actif, affichage Galerie</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#128203;</span>
+              <h5>Projets en cours</h5>
+              <p>Vue liee de Projets, filtre Statut = En cours, affichage Table</p>
+            </div>
+            <div class="callout-item">
+              <span class="callout-emoji">&#128197;</span>
+              <h5>Prochaines echeances</h5>
+              <p>Vue liee de Factures, filtre Statut = Envoyee, triee par Date d'echeance</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 9: MODULES BUSINESS
+           ============================== -->
+      <section class="section" id="modules-business">
+        <h2 class="section-title"><span class="emoji">&#128230;</span> Modules Business <span class="badge badge-business">Business</span></h2>
+        <p class="section-subtitle">Modules avances pour les freelances qui veulent structurer leur croissance et anticiper le passage en societe.</p>
+
+        <!-- Module Sous-traitants -->
+        <div class="db-section">
+          <div class="db-section-header">
+            <span class="db-emoji">&#129309;</span>
+            <h4>Module : Gestion de sous-traitants</h4>
+          </div>
+          <div class="db-card">
+            <div class="db-card-body">
+              <table class="db-table">
+                <thead>
+                  <tr>
+                    <th>Propriete</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Nom</td><td><span class="type-tag">Titre</span></td><td>Nom du sous-traitant</td></tr>
+                  <tr><td>Specialite</td><td><span class="type-tag">Selection</span></td><td>Domaine d'expertise</td></tr>
+                  <tr><td>Tarif jour</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>TJM du sous-traitant</td></tr>
+                  <tr><td>Email</td><td><span class="type-tag">Email</span></td><td>Contact email</td></tr>
+                  <tr><td>Statut</td><td><span class="type-tag">Selection</span></td><td>Disponible / Occupe / Inactif</td></tr>
+                  <tr><td>Projets</td><td><span class="type-tag type-relation">Relation</span></td><td>&#8594; vers base "Projets"</td></tr>
+                  <tr><td>Note qualite</td><td><span class="type-tag">Selection</span></td><td>Notation de 1 a 5 etoiles</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Previsionnel -->
+        <div class="db-section">
+          <div class="db-section-header">
+            <span class="db-emoji">&#128200;</span>
+            <h4>Module : Previsionnel de tresorerie</h4>
+          </div>
+          <div class="db-card">
+            <div class="db-card-body">
+              <table class="db-table">
+                <thead>
+                  <tr>
+                    <th>Propriete</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Mois</td><td><span class="type-tag">Titre</span></td><td>Ex : "Janvier 2026"</td></tr>
+                  <tr><td>Revenus prevus</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Revenus estimes</td></tr>
+                  <tr><td>Revenus reels</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Revenus effectifs</td></tr>
+                  <tr><td>Depenses prevues</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Depenses estimees</td></tr>
+                  <tr><td>Depenses reelles</td><td><span class="type-tag">Nombre (&#8364;)</span></td><td>Depenses effectives</td></tr>
+                  <tr>
+                    <td>Solde prevu</td>
+                    <td><span class="type-tag type-formula">Formule</span></td>
+                    <td><div class="code-block">prop("Revenus prevus") - prop("Depenses prevues")</div></td>
+                  </tr>
+                  <tr>
+                    <td>Solde reel</td>
+                    <td><span class="type-tag type-formula">Formule</span></td>
+                    <td><div class="code-block">prop("Revenus reels") - prop("Depenses reelles")</div></td>
+                  </tr>
+                  <tr>
+                    <td>Ecart</td>
+                    <td><span class="type-tag type-formula">Formule</span></td>
+                    <td><div class="code-block">prop("Solde reel") - prop("Solde prevu")</div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Kit societe -->
+        <div class="db-section">
+          <div class="db-section-header">
+            <span class="db-emoji">&#127970;</span>
+            <h4>Module : Kit passage en societe</h4>
+          </div>
+          <div class="guide-card">
+            <p style="font-size:14px;color:var(--text2);margin-bottom:14px">Cree une page <strong>"&#127970; Kit passage en societe"</strong> avec les elements suivants :</p>
+            <ul class="guide-ul">
+              <li><strong>Checklist EURL vs SASU :</strong> avantages et inconvenients de chaque statut juridique</li>
+              <li><strong>Seuils a surveiller :</strong> CA, TVA, regime fiscal, etc.</li>
+              <li><strong>Demarches administratives :</strong> liste complete des etapes pour creer ta societe</li>
+              <li><strong>Contacts utiles :</strong> CCI, expert-comptable, greffe du tribunal de commerce, etc.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 10: LIVRAISON & STRIPE
+           ============================== -->
+      <section class="section" id="livraison-stripe">
+        <h2 class="section-title"><span class="emoji">&#128640;</span> Livraison &amp; Stripe</h2>
+        <p class="section-subtitle">Configuration de la livraison automatique de ton template selon l'offre achetee et integration avec Stripe.</p>
+
+        <!-- Design -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">1</div>
+            <h3 class="step-title">Design et finitions</h3>
+          </div>
+          <div class="guide-card">
+            <h4>&#127912; Palette de couleurs recommandee</h4>
+            <ul class="guide-ul">
+              <li><strong>Fond de callouts :</strong> gris fonce</li>
+              <li><strong>Accents :</strong> jaune/vert (coherent avec le branding Koda)</li>
+              <li><strong>Statuts :</strong> <span style="color:var(--green)">Vert = OK</span> / <span style="color:var(--orange)">Jaune = Attention</span> / <span style="color:var(--red)">Rouge = Urgent</span></li>
+            </ul>
+          </div>
+          <div class="guide-card">
+            <h4>&#128196; Icones par section</h4>
+            <div class="callout-grid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#127968;</span>
+                <p>Dashboard</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#128101;</span>
+                <p>Clients</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#128203;</span>
+                <p>Projets</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#129534;</span>
+                <p>Factures</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#127963;</span>
+                <p>URSSAF</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#128176;</span>
+                <p>Depenses</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#127919;</span>
+                <p>Objectifs</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#129309;</span>
+                <p>Sous-traitants</p>
+              </div>
+              <div class="callout-item" style="padding:12px;text-align:center">
+                <span class="callout-emoji">&#128200;</span>
+                <p>Previsionnel</p>
+              </div>
+            </div>
+          </div>
+          <div class="tip-box">
+            <span class="tip-icon">&#128161;</span>
+            <div class="tip-content"><strong>Tips design Notion :</strong> Utilise les dividers (<code>---</code>) pour separer les blocs, les colonnes pour les vues cote a cote, les toggle headings pour les sections peu utilisees, et glisse tes bases de donnees dans la sidebar.</div>
+          </div>
+        </div>
+
+        <!-- Livraison par offre -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <h3 class="step-title">Contenu par offre</h3>
+          </div>
+          <div class="pricing-grid">
+            <div class="pricing-col">
+              <h5><span class="badge badge-solo" style="margin-left:0;margin-right:6px">Solo</span></h5>
+              <div class="price">19&#8364; <span>one-time</span></div>
+              <ul>
+                <li>Dashboard</li>
+                <li>Base Clients (CRM)</li>
+                <li>Base Factures</li>
+                <li>Base URSSAF</li>
+                <li>Guide de demarrage simplifie</li>
+              </ul>
+            </div>
+            <div class="pricing-col highlight">
+              <h5><span class="badge badge-pro" style="margin-left:0;margin-right:6px">Pro</span></h5>
+              <div class="price">39&#8364; <span>one-time</span></div>
+              <ul>
+                <li>Tout Solo inclus</li>
+                <li>Base Projets</li>
+                <li>Base Depenses</li>
+                <li>Base Objectifs</li>
+                <li>Pipeline prospection</li>
+                <li>Templates emails (relance, proposition, suivi)</li>
+                <li>Guide complet</li>
+              </ul>
+            </div>
+            <div class="pricing-col">
+              <h5><span class="badge badge-business" style="margin-left:0;margin-right:6px">Business</span></h5>
+              <div class="price">59&#8364; <span>one-time</span></div>
+              <ul>
+                <li>Tout Pro inclus</li>
+                <li>Gestion sous-traitants</li>
+                <li>Previsionnel tresorerie</li>
+                <li>Kit passage en societe</li>
+                <li>Workflows d'automatisation</li>
+                <li>Support email prioritaire</li>
+                <li>Mises a jour futures</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Partager le template -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">3</div>
+            <h3 class="step-title">Partager le template Notion</h3>
+          </div>
+          <div class="guide-card">
+            <ol class="guide-ol">
+              <li>Une fois le template termine, clique sur <strong>"..."</strong> en haut a droite de Notion</li>
+              <li>Selectionne <strong>"Duplicate as template"</strong> ou <strong>"Share" &#8594; "Publish as template"</strong></li>
+              <li>Copie le <strong>lien de duplication</strong></li>
+              <li>C'est ce lien que tu mets dans l'email post-achat Stripe</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Configuration Stripe -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">4</div>
+            <h3 class="step-title">Configurer Stripe</h3>
+          </div>
+          <div class="guide-card">
+            <ol class="guide-ol">
+              <li>Va dans <strong>Stripe Dashboard &#8594; Parametres du lien de paiement</strong></li>
+              <li>Dans <strong>"Page de confirmation"</strong>, mets un message personnalise avec le lien Notion :</li>
+            </ol>
+            <div class="code-block" style="margin:16px 0">Merci pour ton achat ! &#127881;
+
+Clique ici pour dupliquer ton template Koda dans Notion :
+[LIEN NOTION ICI]
+
+Consulte le guide de demarrage joint pour commencer en 5 minutes.
+
+Une question ? Contacte-nous a [ton email]</div>
+            <ol class="guide-ol" start="3" style="counter-reset:guide-counter 2">
+              <li><strong>Optionnel :</strong> configure un email automatique via Stripe (ou Zapier/Make) pour envoyer le lien par email aussi</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Checklist de lancement -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">5</div>
+            <h3 class="step-title">Checklist de lancement</h3>
+          </div>
+          <ul class="checklist" id="checklist">
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> 6 bases de donnees creees avec toutes les proprietes</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> Dashboard construit avec vues liees</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> 3 versions du template (Solo / Pro / Business)</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> Lien de duplication Notion genere pour chaque version</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> 3 liens Stripe configures avec page de confirmation</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> Landing page en ligne</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> Test d'achat effectue (mode test Stripe)</li>
+            <li><span class="check-box" onclick="this.classList.toggle('checked')"></span> Premier post LinkedIn/Twitter prepare</li>
+          </ul>
+        </div>
+      </section>
+
+      <hr class="guide-divider">
+
+      <!-- ==============================
+           SECTION 11: MON COMPTE
+           ============================== -->
+      <section class="section" id="mon-compte">
+        <h2 class="section-title"><span class="emoji">&#9881;&#65039;</span> Mon compte</h2>
+        <p class="section-subtitle">Gere ton compte et tes parametres de securite.</p>
+
+        <div class="account-card">
+          <h4>Informations du compte</h4>
+          <div class="account-info">
+            <div class="account-avatar" id="account-avatar">?</div>
+            <div class="account-email" id="account-email">chargement...</div>
+          </div>
+
+          <h4 style="margin-top:28px">Changer mon mot de passe</h4>
+          <form class="pwd-form" id="account-pwd-form">
+            <div class="form-group">
+              <label for="account-current-pwd">Mot de passe actuel</label>
+              <input type="password" id="account-current-pwd" placeholder="Ton mot de passe actuel" autocomplete="current-password">
+            </div>
+            <div class="form-group">
+              <label for="account-new-pwd">Nouveau mot de passe</label>
+              <input type="password" id="account-new-pwd" placeholder="Nouveau mot de passe (min. 6 caracteres)" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label for="account-confirm-pwd">Confirmer le nouveau mot de passe</label>
+              <input type="password" id="account-confirm-pwd" placeholder="Confirme le nouveau mot de passe" autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn-save" id="btn-account-pwd">Mettre a jour</button>
+          </form>
+          <div id="account-pwd-msg" class="pwd-msg"></div>
+        </div>
+      </section>
+
+      <div style="text-align:center;padding:40px 0 20px">
+        <p style="font-size:12px;color:var(--text3);font-family:var(--m)">Ce guide fait partie du kit Koda. Bonne construction !</p>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===========================
+     PASSWORD CHANGE MODAL
+     =========================== -->
+<div class="modal-overlay" id="pwd-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <h3>Changer le mot de passe</h3>
+    <p class="modal-sub">Saisis ton nouveau mot de passe ci-dessous.</p>
+    <form class="pwd-form" id="modal-pwd-form">
+      <div class="form-group">
+        <label for="modal-new-pwd">Nouveau mot de passe</label>
+        <input type="password" id="modal-new-pwd" placeholder="Nouveau mot de passe (min. 6 caracteres)" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label for="modal-confirm-pwd">Confirmer</label>
+        <input type="password" id="modal-confirm-pwd" placeholder="Confirme le nouveau mot de passe" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-save" id="btn-modal-pwd">Mettre a jour</button>
+    </form>
+    <div id="modal-pwd-msg" class="pwd-msg"></div>
+  </div>
+</div>
+
+<!-- ===========================
+     SCRIPTS
+     =========================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  // ============================
+  // Supabase Init
+  // ============================
+  const SUPABASE_URL = 'https://ryyjxvnqtrofubyrplzh.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5eWp4dm5xdHJvZnVieXJwbHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3OTI4NTgsImV4cCI6MjA4ODM2ODg1OH0.Ob3ali5WPdvZWArJe0Utzg1pyG8J9pQFOpqvPDgB_lU';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ============================
+  // DOM Elements
+  // ============================
+  const loginScreen = document.getElementById('login-screen');
+  const guideScreen = document.getElementById('guide-screen');
+  const loginForm = document.getElementById('login-form');
+  const loginEmail = document.getElementById('login-email');
+  const loginPassword = document.getElementById('login-password');
+  const btnLogin = document.getElementById('btn-login');
+  const btnForgot = document.getElementById('btn-forgot');
+  const loginMsg = document.getElementById('login-msg');
+  const topbarEmail = document.getElementById('topbar-email');
+  const btnLogout = document.getElementById('btn-logout');
+  const btnOpenPwdModal = document.getElementById('btn-open-pwd-modal');
+  const pwdModal = document.getElementById('pwd-modal');
+  const modalClose = document.getElementById('modal-close');
+  const modalPwdForm = document.getElementById('modal-pwd-form');
+  const modalNewPwd = document.getElementById('modal-new-pwd');
+  const modalConfirmPwd = document.getElementById('modal-confirm-pwd');
+  const modalPwdMsg = document.getElementById('modal-pwd-msg');
+  const btnModalPwd = document.getElementById('btn-modal-pwd');
+  const accountPwdForm = document.getElementById('account-pwd-form');
+  const accountCurrentPwd = document.getElementById('account-current-pwd');
+  const accountNewPwd = document.getElementById('account-new-pwd');
+  const accountConfirmPwd = document.getElementById('account-confirm-pwd');
+  const accountPwdMsg = document.getElementById('account-pwd-msg');
+  const btnAccountPwd = document.getElementById('btn-account-pwd');
+  const accountEmail = document.getElementById('account-email');
+  const accountAvatar = document.getElementById('account-avatar');
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const sidebarNav = document.getElementById('sidebar-nav');
+
+  // ============================
+  // Auth State
+  // ============================
+  function showLogin() {
+    loginScreen.classList.remove('hidden');
+    loginScreen.style.display = 'flex';
+    guideScreen.classList.remove('active');
+  }
+
+  function showGuide(user) {
+    loginScreen.classList.add('hidden');
+    loginScreen.style.display = 'none';
+    guideScreen.classList.add('active');
+    guideScreen.classList.add('fade-in');
+
+    const email = user.email || '';
+    topbarEmail.textContent = email;
+    accountEmail.textContent = email;
+    accountAvatar.textContent = email.charAt(0).toUpperCase();
+  }
+
+  function showMsg(el, message, type) {
+    el.textContent = message;
+    el.className = 'login-msg ' + type;
+    el.style.display = 'block';
+  }
+
+  function showPwdMsg(el, message, type) {
+    el.textContent = message;
+    el.className = 'pwd-msg ' + type;
+    el.style.display = 'block';
+  }
+
+  function clearMsg(el) {
+    el.style.display = 'none';
+    el.textContent = '';
+    el.className = el.classList.contains('login-msg') ? 'login-msg' : 'pwd-msg';
+  }
+
+  // Check initial session
+  async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      showGuide(session.user);
+    } else {
+      showLogin();
+    }
+  }
+
+  // Listen for auth state changes
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session && session.user) {
+      showGuide(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      showLogin();
+    }
+  });
+
+  checkSession();
+
+  // ============================
+  // Login
+  // ============================
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg(loginMsg);
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Connexion...';
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    btnLogin.disabled = false;
+    btnLogin.textContent = 'Se connecter';
+
+    if (error) {
+      let msg = 'Email ou mot de passe incorrect.';
+      if (error.message.includes('Invalid login')) msg = 'Email ou mot de passe incorrect.';
+      else if (error.message.includes('Email not confirmed')) msg = 'Verifie ton email pour confirmer ton compte.';
+      else msg = error.message;
+      showMsg(loginMsg, msg, 'error');
+    }
+  });
+
+  // ============================
+  // Forgot Password
+  // ============================
+  btnForgot.addEventListener('click', async () => {
+    const email = loginEmail.value.trim();
+    if (!email) {
+      showMsg(loginMsg, 'Entre ton email ci-dessus puis clique sur "Mot de passe oublie ?".', 'error');
+      return;
+    }
+    clearMsg(loginMsg);
+    btnForgot.disabled = true;
+    btnForgot.textContent = 'Envoi en cours...';
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href
+    });
+
+    btnForgot.disabled = false;
+    btnForgot.textContent = 'Mot de passe oublie ?';
+
+    if (error) {
+      showMsg(loginMsg, error.message, 'error');
+    } else {
+      showMsg(loginMsg, 'Un email de reinitialisation a ete envoye a ' + email + '. Verifie ta boite de reception.', 'success');
+    }
+  });
+
+  // ============================
+  // Logout
+  // ============================
+  btnLogout.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    showLogin();
+    // Clear forms
+    loginForm.reset();
+    clearMsg(loginMsg);
+  });
+
+  // ============================
+  // Password Change Modal
+  // ============================
+  btnOpenPwdModal.addEventListener('click', () => {
+    pwdModal.classList.add('active');
+    clearMsg(modalPwdMsg);
+    modalPwdForm.reset();
+  });
+
+  modalClose.addEventListener('click', () => {
+    pwdModal.classList.remove('active');
+  });
+
+  pwdModal.addEventListener('click', (e) => {
+    if (e.target === pwdModal) {
+      pwdModal.classList.remove('active');
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && pwdModal.classList.contains('active')) {
+      pwdModal.classList.remove('active');
+    }
+  });
+
+  modalPwdForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg(modalPwdMsg);
+
+    const newPwd = modalNewPwd.value;
+    const confirmPwd = modalConfirmPwd.value;
+
+    if (newPwd.length < 6) {
+      showPwdMsg(modalPwdMsg, 'Le mot de passe doit contenir au moins 6 caracteres.', 'error');
+      return;
+    }
+    if (newPwd !== confirmPwd) {
+      showPwdMsg(modalPwdMsg, 'Les mots de passe ne correspondent pas.', 'error');
+      return;
+    }
+
+    btnModalPwd.disabled = true;
+    btnModalPwd.textContent = 'Mise a jour...';
+
+    const { error } = await supabase.auth.updateUser({ password: newPwd });
+
+    btnModalPwd.disabled = false;
+    btnModalPwd.textContent = 'Mettre a jour';
+
+    if (error) {
+      showPwdMsg(modalPwdMsg, error.message, 'error');
+    } else {
+      showPwdMsg(modalPwdMsg, 'Mot de passe mis a jour avec succes !', 'success');
+      modalPwdForm.reset();
+      setTimeout(() => pwdModal.classList.remove('active'), 2000);
+    }
+  });
+
+  // ============================
+  // Account Password Change (Mon compte section)
+  // ============================
+  accountPwdForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg(accountPwdMsg);
+
+    const newPwd = accountNewPwd.value;
+    const confirmPwd = accountConfirmPwd.value;
+
+    if (newPwd.length < 6) {
+      showPwdMsg(accountPwdMsg, 'Le mot de passe doit contenir au moins 6 caracteres.', 'error');
+      return;
+    }
+    if (newPwd !== confirmPwd) {
+      showPwdMsg(accountPwdMsg, 'Les mots de passe ne correspondent pas.', 'error');
+      return;
+    }
+
+    btnAccountPwd.disabled = true;
+    btnAccountPwd.textContent = 'Mise a jour...';
+
+    const { error } = await supabase.auth.updateUser({ password: newPwd });
+
+    btnAccountPwd.disabled = false;
+    btnAccountPwd.textContent = 'Mettre a jour';
+
+    if (error) {
+      showPwdMsg(accountPwdMsg, error.message, 'error');
+    } else {
+      showPwdMsg(accountPwdMsg, 'Mot de passe mis a jour avec succes !', 'success');
+      accountPwdForm.reset();
+    }
+  });
+
+  // ============================
+  // Sidebar Navigation
+  // ============================
+  // Hamburger toggle
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('active');
+  });
+
+  sidebarOverlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('active');
+  });
+
+  // Click sidebar links -> close on mobile
+  const sidebarLinks = sidebarNav.querySelectorAll('a');
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+      }
+    });
+  });
+
+  // Active section highlight on scroll
+  const sections = document.querySelectorAll('.section');
+  const observerOptions = {
+    root: null,
+    rootMargin: '-30% 0px -60% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        sidebarLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(section => observer.observe(section));
+
+})();
+</script>
+</body>
+</html>
